@@ -1,0 +1,46 @@
+# Local Postgres for SA Marketplace (DATABASE.md §2).
+# Compose reads Backend/.env automatically, which is where ${...} below comes from.
+# No `version:` key — it is obsolete in Compose v2 and warns if present.
+
+# Project name: prefixes the network and shows up in `docker compose ls`.
+# Without it Compose uses the directory name, which is just "backend".
+name: sa-marketplace
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sa-marketplace-db
+    restart: unless-stopped
+
+    # These three are read ONLY when the volume is empty, i.e. on first start.
+    # Changing them later does nothing until `pnpm db:reset` wipes the volume.
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-sa_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sa_local_password}
+      POSTGRES_DB: ${DB_NAME:-sa_marketplace}
+
+    # HOST:CONTAINER. The container always listens on 5432 internally; we publish it
+    # on 5433 because a local Postgres is already holding 5432 on this machine.
+    ports:
+      - '${DB_PORT:-5433}:5432'
+
+    # Named volume, managed by Docker. Survives `docker compose down`.
+    # Destroyed by `down -v` — that is what `pnpm db:reset` does, on purpose.
+    volumes:
+      - sa_marketplace_pgdata:/var/lib/postgresql/data
+
+    # "running" is not "ready". pg_isready is what tells the API it can connect.
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${DB_USERNAME:-sa_user} -d ${DB_NAME:-sa_marketplace}',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  sa_marketplace_pgdata:
+    name: sa_marketplace_pgdata

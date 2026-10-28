@@ -1,0 +1,22 @@
+// Every navigation target lives here, so a route change is a one-file change.
+export const PATHS = {
+  dashboard: '/',
+  login: '/login',
+  register: '/register',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
+  sessionExpired: '/session-expired',
+  application: '/application',
+  resubmitApplication: '/application/resubmit',
+  orders: '/orders',
+  orderDetail: (orderNumber: string) => `/orders/${orderNumber}`,
+  cancelOrder: (orderNumber: string) => `/orders/${orderNumber}/cancel`,
+  catalogue: '/catalogue',
+  newProduct: '/catalogue/new',
+  editProduct: (productId: string) => `/catalogue/${productId}`,
+  retireProduct: (productId: string) => `/catalogue/retire/${productId}`,
+  profile: '/profile',
+  signOut: '/profile/sign-out',
+  forbidden: '/403',
+  serverError: '/500',
+} as const

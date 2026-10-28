@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { padding: 24px; justify-content: center; gap: 14px; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn { font-family: 'Inter'; font-weight: 500; font-size: 14px; padding: 10px 18px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }
+  .primary   { background: #00004C; color: #fff; }
+  .primary:hover { background: #0A1566; }
+  .accent    { background: #01B4D2; color: #00004C; font-weight: 700; }
+  .secondary { background: #fff; color: #00004C; border-color: #D8DFE8; }
+  .ghost     { background: transparent; color: #00004C; }
+  .danger    { background: #FD0000; color: #fff; }
+  .disabled  { background: #EBEFF4; color: #8A95A6; cursor: not-allowed; }
+  .lbl { font-family: 'Roboto'; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #8A95A6; }
+</style></head><body>
+<div class="lbl">Buttons</div>
+<div class="row">
+  <button class="btn primary">Start collection</button>
+  <button class="btn accent">Submit to lab</button>
+  <button class="btn secondary">Cancel</button>
+  <button class="btn ghost">Skip</button>
+  <button class="btn danger">Void sample</button>
+  <button class="btn disabled">Disabled</button>
+</div>
+</body></html>

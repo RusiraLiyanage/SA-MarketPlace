@@ -1,0 +1,20 @@
+.turbo
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Firebase cache
+.idea
+**/node_modules
+**/dist
+**/.env*
+!**/.env.example
+.DS_Store
+.vscode/
+
+# Generated PDFs (invoices, etc.) — local runtime output, not source
+/storage/

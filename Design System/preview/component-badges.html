@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { padding: 20px 24px; gap: 12px; }
+  .lbl { font-family: 'Roboto'; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #8A95A6; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { font-family: 'Inter'; font-weight: 500; font-size: 11px; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .onsite { background: rgba(10,209,129,0.15); color: #057a4c; }
+  .onsite .dot { background: #0AD181; }
+  .pending { background: rgba(1,180,210,0.14); color: #016478; }
+  .pending .dot { background: #01B4D2; }
+  .done { background: rgba(21,108,201,0.14); color: #0f4a8d; }
+  .done .dot { background: #156CC9; }
+  .fail { background: rgba(253,0,0,0.12); color: #b30000; }
+  .fail .dot { background: #FD0000; }
+  .draft { background: #EBEFF4; color: #4B5767; }
+  .draft .dot { background: #8A95A6; }
+</style></head><body>
+<div class="lbl">Status badges</div>
+<div class="row">
+  <span class="badge onsite"><span class="dot"></span>On-site</span>
+  <span class="badge pending"><span class="dot"></span>In collection</span>
+  <span class="badge done"><span class="dot"></span>Submitted to lab</span>
+  <span class="badge fail"><span class="dot"></span>Voided</span>
+  <span class="badge draft"><span class="dot"></span>Draft</span>
+</div>
+</body></html>

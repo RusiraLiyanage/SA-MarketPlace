@@ -1,0 +1,263 @@
+/* ============================================================================
+   Sample Assist — Colors & Type
+   Source: SA Brand Guidelines 2025 (pages 3–6)
+
+   Typography:
+     - Roboto  → Documents & Collateral (marketing, decks, print)
+     - Inter   → In-App UI
+   Both loaded from Google Fonts; no substitution needed.
+
+   Color palette (from guidelines):
+     Primary:  SA Navy   #00004C  — headings, solid backgrounds
+               SA Plasma #01B4D2  — subheadings, highlight / accent
+     Support:  SA Mid Blue  #156CC9
+               SA Red       #FD0000
+               SA Green     #0AD181   (labelled "ON-SITE")
+               SA Gray Blue #4B5767
+               SA Teal      #3EB8A4   (used in product iconography)
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+  /* ---------- Brand colors (raw tokens) ---------- */
+  --sa-navy:       #00004C;
+  --sa-plasma:     #01B4D2;
+  --sa-mid-blue:   #156CC9;
+  --sa-red:        #FD0000;
+  --sa-green:      #0AD181;
+  --sa-gray-blue:  #4B5767;
+  --sa-teal:       #3EB8A4;
+
+  /* ---------- Navy scale (derived — for surfaces & overlays) ---------- */
+  --sa-navy-950:   #000033;   /* deepest — full-bleed backdrops */
+  --sa-navy-900:   #00004C;   /* SA Navy */
+  --sa-navy-800:   #0A1566;
+  --sa-navy-700:   #1C2E80;
+  --sa-navy-600:   #2E4A9A;
+
+  /* ---------- Plasma scale ---------- */
+  --sa-plasma-600: #0190A8;
+  --sa-plasma-500: #01B4D2;   /* SA Plasma */
+  --sa-plasma-400: #38C8DE;
+  --sa-plasma-300: #7ADDEC;
+  --sa-plasma-100: #D4F3F9;
+
+  /* ---------- Neutrals (on-brand cool grays, tinted toward navy) ---------- */
+  --sa-white:      #FFFFFF;
+  --sa-gray-50:    #F5F7FA;
+  --sa-gray-100:   #EBEFF4;
+  --sa-gray-200:   #D8DFE8;
+  --sa-gray-300:   #BBC4D1;
+  --sa-gray-400:   #8A95A6;
+  --sa-gray-500:   --sa-gray-blue, #4B5767;
+  --sa-gray-600:   #3A4452;
+  --sa-gray-700:   #2A323D;
+  --sa-gray-900:   #11151C;
+
+  /* ---------- Semantic surfaces ---------- */
+  --bg:            #FFFFFF;          /* default page bg (docs/collateral)   */
+  --bg-subtle:     var(--sa-gray-50);
+  --bg-muted:      var(--sa-gray-100);
+  --bg-inverse:    var(--sa-navy-900); /* full-bleed navy slides / hero    */
+  --bg-inverse-deep: var(--sa-navy-950);
+
+  --surface:       #FFFFFF;
+  --surface-raised:#FFFFFF;
+  --surface-sunken:var(--sa-gray-50);
+
+  /* ---------- Foregrounds ---------- */
+  --fg1:           var(--sa-navy-900);   /* primary text on light bg      */
+  --fg2:           var(--sa-gray-blue);  /* secondary / body muted        */
+  --fg3:           var(--sa-gray-400);   /* tertiary / captions           */
+  --fg-on-inverse:        #FFFFFF;
+  --fg-on-inverse-muted:  rgba(255,255,255,0.72);
+  --fg-on-inverse-subtle: rgba(255,255,255,0.48);
+
+  /* ---------- Accent & interactive ---------- */
+  --accent:            var(--sa-plasma-500);
+  --accent-hover:      var(--sa-plasma-600);
+  --accent-on-dark:    var(--sa-plasma-500);  /* subheads on navy        */
+  --link:              var(--sa-mid-blue);
+  --link-on-dark:      var(--sa-plasma-500);
+  --focus-ring:        var(--sa-plasma-500);
+
+  /* ---------- Status ---------- */
+  --success:       var(--sa-green);     /* also "on-site" state          */
+  --danger:        var(--sa-red);
+  --warning:       #F2A93B;             /* derived — not in guide        */
+  --info:          var(--sa-mid-blue);
+
+  /* ---------- Borders / dividers ---------- */
+  --border:          var(--sa-gray-200);
+  --border-strong:   var(--sa-gray-300);
+  --border-on-dark:  rgba(255,255,255,0.14);
+  --divider:         var(--sa-gray-100);
+
+  /* ---------- Shadows (conservative — no drop shadows on logo) ---------- */
+  --shadow-xs:  0 1px 2px rgba(0, 0, 76, 0.06);
+  --shadow-sm:  0 2px 4px rgba(0, 0, 76, 0.08);
+  --shadow-md:  0 6px 18px rgba(0, 0, 76, 0.10);
+  --shadow-lg:  0 18px 48px rgba(0, 0, 76, 0.16);
+  --shadow-focus: 0 0 0 3px rgba(1, 180, 210, 0.35);
+
+  /* ---------- Radius ---------- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+
+  /* ---------- Typography families ---------- */
+  --font-docs:  'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-app:   'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body:  var(--font-docs);      /* default: docs context         */
+  --font-mono:  ui-monospace, 'SF Mono', 'Roboto Mono', 'Cascadia Mono', Consolas, monospace;
+
+  /* ---------- Type scale (px; fluid where noted) ---------- */
+  --fs-display: clamp(44px, 6vw, 72px);
+  --fs-h1:      clamp(32px, 4vw, 48px);
+  --fs-h2:      32px;
+  --fs-h3:      24px;
+  --fs-h4:      20px;
+  --fs-body:    16px;
+  --fs-small:   14px;
+  --fs-caption: 12px;
+  --fs-eyebrow: 11px;
+
+  --lh-tight:   1.1;
+  --lh-snug:    1.25;
+  --lh-normal:  1.5;
+  --lh-loose:   1.7;
+
+  --ls-tight:   -0.01em;
+  --ls-normal:  0;
+  --ls-caps:    0.12em;   /* eyebrows, section tags ("P A G E 0 4")     */
+}
+
+/* ============================================================================
+   Semantic type styles — apply as classes or via element selectors
+   ============================================================================ */
+
+.font-docs  { font-family: var(--font-docs); }
+.font-app   { font-family: var(--font-app);  }
+
+/* Display — marketing hero */
+.sa-display {
+  font-family: var(--font-docs);
+  font-weight: 700;
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  color: var(--fg1);
+}
+
+/* Headings — Bold (per guide) */
+.sa-h1, h1 {
+  font-family: var(--font-docs);
+  font-weight: 700;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  color: var(--fg1);
+}
+.sa-h2, h2 {
+  font-family: var(--font-docs);
+  font-weight: 700;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+/* Sub-heading — Bold, uses Plasma accent per guide */
+.sa-h3, h3 {
+  font-family: var(--font-docs);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  color: var(--accent);
+}
+.sa-h4, h4 {
+  font-family: var(--font-docs);
+  font-weight: 500;
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+
+/* Body — Regular */
+.sa-body, p {
+  font-family: var(--font-docs);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--fg2);
+}
+.sa-body-strong {
+  font-weight: 500;
+  color: var(--fg1);
+}
+.sa-small  { font-size: var(--fs-small);   line-height: var(--lh-normal); color: var(--fg2); }
+.sa-caption{ font-size: var(--fs-caption); line-height: var(--lh-normal); color: var(--fg3); }
+
+/* Eyebrow / section tag — mimics "P A G E 0 4   C O L O R P A L E T T E" */
+.sa-eyebrow {
+  font-family: var(--font-docs);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+/* In-App type (Inter) — three weights per guide */
+.sa-app-bold    { font-family: var(--font-app); font-weight: 700; }
+.sa-app-medium  { font-family: var(--font-app); font-weight: 500; }
+.sa-app-regular { font-family: var(--font-app); font-weight: 400; }
+
+/* Code */
+code, .sa-code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--fg1);
+}
+
+/* Links */
+a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .15s ease, color .15s ease;
+}
+a:hover { border-bottom-color: currentColor; }
+
+/* Inverse context — when inside .on-navy, text flips */
+.on-navy {
+  background: var(--bg-inverse);
+  color: var(--fg-on-inverse);
+}
+.on-navy h1,
+.on-navy h2,
+.on-navy h4,
+.on-navy .sa-h1,
+.on-navy .sa-h2,
+.on-navy .sa-h4,
+.on-navy .sa-display { color: var(--fg-on-inverse); }
+.on-navy h3, .on-navy .sa-h3 { color: var(--accent-on-dark); }
+.on-navy p, .on-navy .sa-body { color: var(--fg-on-inverse-muted); }
+.on-navy .sa-eyebrow { color: var(--fg-on-inverse-subtle); }
+.on-navy a { color: var(--link-on-dark); }

@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { padding: 22px; background: #F5F7FA; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; height: 100%; align-items: center; }
+  .cell { text-align: center; }
+  .card { width: 100%; height: 70px; background: #fff; border-radius: 10px; }
+  .xs { box-shadow: 0 1px 2px rgba(0,0,76,0.06); }
+  .sm { box-shadow: 0 2px 4px rgba(0,0,76,0.08); }
+  .md { box-shadow: 0 6px 18px rgba(0,0,76,0.10); }
+  .lg { box-shadow: 0 18px 48px rgba(0,0,76,0.16); }
+  .label { font-family: 'Roboto'; font-size: 11px; color: #4B5767; margin-top: 10px; }
+  b { color: #00004C; font-weight: 700; }
+</style></head><body>
+<div class="grid">
+  <div class="cell"><div class="card xs"></div><div class="label"><b>shadow-xs</b><br>micro lift</div></div>
+  <div class="cell"><div class="card sm"></div><div class="label"><b>shadow-sm</b><br>resting card</div></div>
+  <div class="cell"><div class="card md"></div><div class="label"><b>shadow-md</b><br>dropdowns</div></div>
+  <div class="cell"><div class="card lg"></div><div class="label"><b>shadow-lg</b><br>modals</div></div>
+</div>
+</body></html>

@@ -1,0 +1,8 @@
+{
+  "extends": "@sa-marketplace/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@sa-marketplace/common/entities": ["packages/common/src/entities"]
+    }
+  }
+}

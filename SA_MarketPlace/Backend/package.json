@@ -1,0 +1,79 @@
+{
+  "name": "sa-marketplace",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint --fix",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e --concurrency=1",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "db:logs": "docker compose logs -f postgres",
+    "mail:token": "node scripts/google-refresh-token.mjs",
+    "mail:preview": "pnpm --filter @sa-marketplace/common build && node scripts/mail-preview.mjs",
+    "db:seed": "pnpm --filter @sa-marketplace/entities seed",
+    "db:verify": "docker compose exec -T postgres psql -U sa_user -d sa_marketplace -v ON_ERROR_STOP=1 < scripts/verify-schema.sql",
+    "lint-staged": "lint-staged",
+    "customer-facing": "turbo dev --filter @sa-marketplace/customer-facing",
+    "supplier-api": "turbo dev --filter @sa-marketplace/supplier-api",
+    "admin-api": "turbo dev --filter @sa-marketplace/admin-api",
+    "common": "turbo dev --filter @sa-marketplace/common",
+    "entities": "turbo dev --filter @sa-marketplace/entities",
+    "pre": "pnpm install && turbo build --filter='./packages/*'",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "lint-staged": {
+    "**/*.{ts,js}": [
+      "pnpm run lint --fix"
+    ]
+  },
+  "packageManager": "pnpm@10.11.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["puppeteer"]
+  },
+  "devDependencies": {
+    "@sa-marketplace/eslint-config": "workspace:*",
+    "@sa-marketplace/tsconfig": "workspace:*",
+    "@types/node": "^17.0.21",
+    "@types/passport": "^1.0.17",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-turbo": "^2.5.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-turbo": "^2.7.2",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.7",
+    "prettier": "^2.3.2",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.6.0",
+    "turbo": "^2.5.5",
+    "typescript": "4.9.5"
+  },
+  "resolutions": {
+    "strip-ansi": "6.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/throttler": "^5.2.0",
+    "bcryptjs": "^3.0.3",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0"
+  }
+}

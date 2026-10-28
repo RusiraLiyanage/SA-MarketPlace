@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SA Marketplace — Delivery Report</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+  :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#1d4ed8; --soft:#eff6ff; --ok:#15803d; --okbg:#dcfce7; --warn:#a16207; --warnbg:#fef9c3; --no:#b91c1c; --nobg:#fee2e2; }
+  * { box-sizing: border-box; }
+  body { font-variant-ligatures: none; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.45; margin: 0; }
+  h1 { font-size: 25pt; line-height: 1.15; margin: 0 0 4pt; color: #0b1f4d; }
+  h2 { font-size: 14.5pt; margin: 20pt 0 6pt; color: #0b1f4d; border-bottom: 2px solid var(--accent); padding-bottom: 3pt; break-after: avoid; }
+  h3 { font-size: 11pt; margin: 13pt 0 4pt; color: var(--accent); break-after: avoid; }
+  p { margin: 4pt 0 6pt; }
+  ul, ol { margin: 3pt 0 6pt; padding-left: 16pt; }
+  li { margin: 1.5pt 0; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.6pt; background: #f3f4f6; padding: 0.5pt 3pt; border-radius: 3px; }
+  pre { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.4pt; background: #0f172a; color: #e2e8f0; padding: 7pt 9pt; border-radius: 5px; margin: 5pt 0 8pt; white-space: pre-wrap; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 5pt 0 9pt; font-size: 9pt; }
+  th { text-align: left; background: #0b1f4d; color: #fff; padding: 4pt 6pt; font-weight: 600; }
+  td { padding: 4pt 6pt; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr { break-inside: avoid; }
+  tbody tr:nth-child(even) td { background: #f9fafb; }
+  .muted { color: var(--muted); }
+  .cover { padding: 6pt 0 10pt; border-bottom: 1px solid var(--line); margin-bottom: 8pt; }
+  .eyebrow { text-transform: uppercase; letter-spacing: 1.6px; font-size: 8.5pt; color: var(--accent); font-weight: 700; margin-bottom: 6pt; }
+  .meta { font-size: 9pt; color: var(--muted); margin-top: 8pt; }
+  .meta b { color: var(--ink); }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7pt; margin: 10pt 0; }
+  .tile { background: var(--soft); border-radius: 6px; padding: 8pt 9pt; }
+  .tile .n { font-size: 17pt; font-weight: 700; color: #0b1f4d; line-height: 1.1; }
+  .tile .l { font-size: 8.3pt; color: var(--muted); }
+  .box { background: var(--soft); border-left: 4px solid var(--accent); padding: 6pt 10pt; margin: 7pt 0; border-radius: 0 5px 5px 0; break-inside: avoid; }
+  .box.warn { background: var(--warnbg); border-left-color: #ca8a04; }
+  .chip { display: inline-block; font-size: 8pt; font-weight: 700; padding: 1pt 6pt; border-radius: 9px; white-space: nowrap; }
+  .done { background: var(--okbg); color: var(--ok); } .part { background: var(--warnbg); color: var(--warn); } .todo { background: var(--nobg); color: var(--no); }
+  .step { display: flex; gap: 8pt; margin: 6pt 0; break-inside: avoid; }
+  .step .num { flex: 0 0 18pt; height: 18pt; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 9pt; text-align: center; line-height: 18pt; margin-top: 1pt; }
+  .step .body { flex: 1; }
+  .step .body > p:first-child { margin-top: 0; font-weight: 600; }
+  .two { columns: 2; column-gap: 16pt; font-size: 8.4pt; }
+  .two p { margin: 1.5pt 0; break-inside: avoid; }
+  .pagebreak { break-before: page; }
+  svg { break-inside: avoid; }
+  svg text { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eyebrow">Sample Assist · Engineering · Intern project</div>
+  <h1>SA Marketplace — Delivery Report</h1>
+  <div class="muted" style="font-size:11.5pt">Consumables ordering and marketplace for Collection Manager: the backend and the customer marketplace, seller portal and SA Admin front ends. What was built, why, how to run it, and what comes next.</div>
+  <div class="meta"><b>Prepared for:</b> Tech Lead &nbsp;·&nbsp; <b>Prepared by:</b> Rusira Senath Liyanage &nbsp;·&nbsp; <b>Status as at:</b> 25 October 2026 &nbsp;·&nbsp; <b>Source of truth:</b> Intern Project Brief, 15 July 2026</div>
+</div>
+
+<h2 style="margin-top:8pt">1. Summary</h2>
+<p>The brief asks for <b>one shared backend with several front-end entry points</b>: a marketplace for any buyer, a seller side with admin verification, and consumable ordering inside Collection Manager (CM). The Phase 1 backend for the marketplace, seller portal and admin app is complete, tested and documented, and the <b>customer marketplace, the seller portal and SA Admin front ends are built on top of it</b> and work end to end against the real API. The CM store front end has not been started. Nothing has been deployed; everything runs locally as the brief requires.</p>
+
+<div class="tiles">
+  <div class="tile"><div class="n">3</div><div class="l">APIs on one database<br>(customer, supplier, admin)</div></div>
+  <div class="tile"><div class="n">63</div><div class="l">API operations<br>(21 + 25 + 17)</div></div>
+  <div class="tile"><div class="n">1,685</div><div class="l">automated tests<br>(198 + 741 backend; 166 customer, 337 seller and 243 admin front end)</div></div>
+  <div class="tile"><div class="n">46</div><div class="l">written decision records<br>(ADRs) in the repo</div></div>
+</div>
+
+<h3>Three things to know up front</h3>
+<ol>
+  <li><b>Two Phase 1 items are deliberately not built:</b> CM ordering (needs the CM front end and a decision on single sign-on) and adding stock to the buyer's inventory when an order is received. Both are recorded as open decisions, not forgotten (section 7).</li>
+  <li><b>One deliberate departure from the brief's wording:</b> the catalogue requires a sign-in, so there is no anonymous browsing. Anyone can still register with an email and password, with no CM account needed (ADR 0021).</li>
+  <li><b>Three of four front ends exist.</b> The marketplace for buyers, the seller portal and SA Admin are built and connected (section 3, "Front end"). The CM store is next (section 8). Prioritised recommendations and risks are in section 9.</li>
+</ol>
+
+
+<h3>What you are receiving</h3>
+<div class="box"><b>Latest source code:</b> the <code>phase-1-completed</code> branch of the Bitbucket repository <code>innomente/equipment-assist</code>. The backend lives in <code>SA_MarketPlace/Backend</code>, the customer front end in <code>SA_MarketPlace/Frontend/customer-facing-frontend</code>, the seller portal in <code>SA_MarketPlace/Frontend/seller-portal</code> and SA Admin in <code>SA_MarketPlace/Frontend/admin-portal</code>. Review and run that branch; section 9 recommends how to merge it into <code>main</code>.</div>
+<table>
+  <thead><tr><th style="width:26%">Item</th><th>Where to find it</th></tr></thead>
+  <tbody>
+    <tr><td>Source code</td><td>Branch <code>phase-1-completed</code>: <code>SA_MarketPlace/Backend</code> (three APIs and shared packages) <code>SA_MarketPlace/Frontend/customer-facing-frontend</code> (the buyer app) and <code>SA_MarketPlace/Frontend/seller-portal</code> (the supplier app)</td></tr>
+    <tr><td>Setup instructions</td><td>Section 2 of this report, and the shorter <code>Backend/README.md</code> and the two front-end READMEs</td></tr>
+    <tr><td>Database: migrations, seed, checks</td><td><code>packages/entities/src/migrations</code> (20), <code>packages/entities/src/seeds/seed.sql</code>, <code>scripts/verify-schema.sql</code>, <code>docker-compose.yml</code></td></tr>
+    <tr><td>API documentation</td><td>Live Swagger at <code>/docs</code> on each app, and <code>Backend/docs/api-reference.md</code> with curl examples</td></tr>
+    <tr><td>Decisions and reasoning</td><td><code>Backend/docs/adr</code> (46 records, listed in the appendix); front ends: <code>Frontend/customer-facing-frontend/docs</code> (<code>state-and-api.md</code>, <code>ui-build-plan.md</code>) <code>Frontend/seller-portal/docs</code> and <code>Frontend/admin-portal/docs</code> (each with <code>ui-build-plan.md</code> and <code>browser-checklist.md</code>)</td></tr>
+    <tr><td>Scope and data model</td><td><code>CLAUDE.md</code> and <code>DATABASE.md</code> at the repository root</td></tr>
+    <tr><td>Tests</td><td>Unit tests beside the code (<code>*.spec.ts</code>); end-to-end tests in each app's <code>test</code> folder</td></tr>
+    <tr><td>This report</td><td><code>Backend/docs/report</code> (PDF, HTML source and the script that renders it)</td></tr>
+  </tbody>
+</table>
+<p><b>Not included:</b> the screen designs for the four surfaces, which are kept in the project's separate design folders rather than the repository and should be shared with the team alongside the code; and any secrets. The only real credentials are the optional Gmail ones for sending email, which live in each developer's git-ignored <code>.env</code> (section 2.8). Every login is a fictional seeded account.</p>
+
+<h2>2. Set it up on your own machine</h2>
+<p>This is the whole path from an empty folder to a running system. Allow about 15 minutes, most of it the first <code>pnpm install</code> (it downloads Chromium for the invoice PDFs). Everything runs locally; nothing is installed system-wide except the three tools below.</p>
+
+<h3>2.1 What you need</h3>
+<table>
+  <thead><tr><th>Tool</th><th>Version</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Node.js</td><td>18 or newer</td><td>Verified on 25.0.0</td></tr>
+    <tr><td>pnpm</td><td>10.11.0</td><td>Pinned in <code>package.json</code>. Run <code>corepack enable</code> and it installs itself</td></tr>
+    <tr><td>Docker Desktop</td><td>any recent</td><td>Must be <b>running</b> before any database command. No local Postgres is needed</td></tr>
+    <tr><td>Free ports</td><td>5433, 8001, 8002, 8003</td><td>Database, then customer, supplier and admin APIs</td></tr>
+  </tbody>
+</table>
+
+<h3>2.2 Get the code and install</h3>
+<div class="step"><div class="num">1</div><div class="body"><p>Clone the repository and open the backend folder</p>
+<pre>git clone &lt;repository-url&gt;
+cd &lt;repository-folder&gt;/SA_MarketPlace/Backend</pre></div></div>
+<div class="step"><div class="num">2</div><div class="body"><p>Create your environment file</p>
+<pre>cp .env.example .env</pre>
+<p style="font-weight:400">The defaults work as they are for local use. <code>.env</code> is git-ignored and must never be committed. Replace <code>JWT_SECRET</code> if you share the instance.</p></div></div>
+<div class="step"><div class="num">3</div><div class="body"><p>Install dependencies</p>
+<pre>pnpm install</pre>
+<p style="font-weight:400">A note saying <code>@nestjs/core</code> build scripts were ignored is normal.</p></div></div>
+
+<h3>2.3 Database and Docker</h3>
+<p>One Postgres 16 container serves all three APIs. <code>docker-compose.yml</code> defines it, and its settings come from your <code>.env</code>.</p>
+<table>
+  <thead><tr><th>Setting</th><th>Value</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Container</td><td><code>sa-marketplace-db</code> (image <code>postgres:16-alpine</code>)</td><td>Small, current, and the same engine everywhere</td></tr>
+    <tr><td>Host port</td><td><b>5433</b> (container 5432)</td><td>Avoids clashing with a Postgres you may already run on 5432</td></tr>
+    <tr><td>Credentials</td><td><code>sa_user</code> / <code>sa_local_password</code>, database <code>sa_marketplace</code></td><td>Local only; set in <code>.env</code></td></tr>
+    <tr><td>Data volume</td><td><code>sa_marketplace_pgdata</code></td><td>Data survives <code>db:down</code>; <code>db:reset</code> destroys it on purpose</td></tr>
+    <tr><td>Health check</td><td><code>pg_isready</code> every 5 s</td><td>"Running" is not "ready"; wait for <i>healthy</i></td></tr>
+  </tbody>
+</table>
+
+<div class="step"><div class="num">4</div><div class="body"><p>Start the database and wait until it is healthy</p>
+<pre>pnpm db:up
+docker compose ps        # STATUS should read "healthy"</pre></div></div>
+
+<div class="step"><div class="num">5</div><div class="body"><p>Create the tables by running the migrations</p>
+<pre>pnpm --filter @sa-marketplace/entities migration:run</pre>
+<p style="font-weight:400">This runs the 20 migration files in <code>packages/entities/src/migrations</code> in timestamp order, one line per file ("… has been executed successfully"). The database is changed <b>only</b> this way, never by hand (ADR 0001). The result is 17 tables and 7 enum types.</p></div></div>
+
+<div class="step"><div class="num">6</div><div class="body"><p>Load the demo data (the seed)</p>
+<pre>pnpm db:seed             # prints: Seed applied successfully.</pre>
+<p style="font-weight:400">This runs <code>packages/entities/src/seeds/seed.sql</code> in one transaction, so a failure leaves the database untouched. It <b>replaces</b> the seeded tables, so running it again resets the demo data. Everything is fictional.</p></div></div>
+
+<div class="step"><div class="num">7</div><div class="body"><p>Confirm the database is correct</p>
+<pre>pnpm db:verify           # runs scripts/verify-schema.sql: every row must read PASS (33 checks)
+pnpm --filter @sa-marketplace/entities db:check   # boots the database module and connects</pre>
+<p style="font-weight:400">The 33 checks cover the schema shape, the ban on storing card details, and the business rules the data must obey (for example, prices frozen on orders, unapproved sellers' products invisible).</p></div></div>
+
+<table>
+  <thead><tr><th>What the seed loads</th><th>Count</th><th>What the seed loads</th><th>Count</th></tr></thead>
+  <tbody>
+    <tr><td>Users</td><td>12</td><td>Products</td><td>40 (38 published, 1 draft, 1 retired)</td></tr>
+    <tr><td>Organisations</td><td>5</td><td>Categories (with sub-categories)</td><td>7</td></tr>
+    <tr><td>Supplier profiles</td><td>4 (approved, pending, rejected)</td><td>Orders, each with payment and delivery</td><td>7, one in every status</td></tr>
+    <tr><td>Carts / inventory rows</td><td>1 / 6</td><td>Invoices</td><td>0 (generated on first download)</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 Start the three APIs</h3>
+<p>Use one terminal for each. They run in watch mode and build the shared packages first.</p>
+<pre>pnpm customer-facing     # http://localhost:8001/docs
+pnpm supplier-api        # http://localhost:8002/docs
+pnpm admin-api           # http://localhost:8003/docs</pre>
+
+<h3>2.5 Log in and try it (about five minutes)</h3>
+<p>Every seeded account uses the password <code>Password123!</code> (fake, local only).</p>
+<table>
+  <thead><tr><th>App</th><th>Email</th><th>Use it to</th></tr></thead>
+  <tbody>
+    <tr><td>Customer</td><td><code>j.shaw@saclinics.com.au</code></td><td>Buyer who is also a CM user: one account, two roles</td></tr>
+    <tr><td>Customer</td><td><code>s.chen@miningco.com.au</code></td><td>Buyer with order history</td></tr>
+    <tr><td>Supplier</td><td><code>priya@bindimedsupply.com.au</code></td><td>Approved seller (Bindi MedSupply)</td></tr>
+    <tr><td>Supplier</td><td><code>r.patel@clinicalsupplies.com.au</code></td><td>Seller still pending review (the "under review" case)</td></tr>
+    <tr><td>Admin</td><td><code>a.morgan@sampleassist.com.au</code></td><td>Approve or reject sellers, view all orders</td></tr>
+  </tbody>
+</table>
+<ol>
+  <li>On the customer Swagger page, call <code>POST /api/customer/v1/auth/login</code> with the buyer above, then paste the returned <code>access_token</code> into <b>Authorize</b>. Tokens last 15 minutes.</li>
+  <li>Browse with <code>GET /products</code> (try search, category, price range), add an item with <code>POST /cart/items</code>, and place the order with <code>POST /checkout</code>.</li>
+  <li>Pay with the mock card <code>4242 4242 4242 4242</code> (approved) or <code>4000 0000 0000 0002</code> (declined). Any future expiry and a 3-digit CVC work.</li>
+  <li>On the supplier page, log in as the Bindi seller, find the order under <i>orders requiring dispatch</i>, dispatch it, then download the invoice PDF from either app.</li>
+  <li>On the admin page, log in as the admin, open the supplier queue and approve or reject the pending seller.</li>
+</ol>
+
+<h3>2.6 Tests, and what to do when something goes wrong</h3>
+<pre>pnpm test        # unit tests (198)
+pnpm test:e2e    # end-to-end tests (741), against the real database</pre>
+<div class="box warn"><b>Run the end-to-end tests on a freshly seeded database.</b> They rely on the seed data, so manual testing that edits it (publishing the seeded draft product, changing a seeded password) makes a handful fail. <code>pnpm db:seed</code> resets it.</div>
+<table>
+  <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
+  <tbody>
+    <tr><td>Cannot connect to the Docker daemon</td><td>Start Docker Desktop and wait for it to settle</td></tr>
+    <tr><td>Missing required environment variable</td><td>Run <code>cp .env.example .env</code></td></tr>
+    <tr><td>Port 5433 in use</td><td>Change <code>DB_PORT</code> in <code>.env</code>, then <code>pnpm db:reset</code></td></tr>
+    <tr><td>Changed <code>DB_PASSWORD</code> and login fails</td><td>Docker reads it only on first start; run <code>pnpm db:reset</code></td></tr>
+    <tr><td>401 after about 15 minutes</td><td>The token expired; log in again</td></tr>
+    <tr><td>429 on login</td><td>Limit is 5 attempts a minute per IP; wait a minute</td></tr>
+    <tr><td>Invoice PDF fails</td><td>Chromium missing: <code>npx puppeteer browsers install chrome</code>, then restart the API</td></tr>
+  </tbody>
+</table>
+<p class="muted">Database commands at a glance: <code>pnpm db:up</code> start · <code>db:down</code> stop (data kept) · <code>db:reset</code> wipe and start clean · <code>db:seed</code> reload demo data · <code>db:verify</code> check · <code>db:logs</code> follow logs. A shell into the database: <code>docker compose exec postgres psql -U sa_user -d sa_marketplace</code>. For a GUI client use host <code>localhost</code>, port <code>5433</code>, user <code>sa_user</code>, database <code>sa_marketplace</code>. The same steps are kept short in <code>Backend/README.md</code>.</p>
+
+<h3>2.7 Run the customer front end</h3>
+<p>Needs Node 24 or newer (<code>nvm use</code> reads <code>.nvmrc</code>). With the customer API from 2.4 running:</p>
+<pre>cd ../Frontend/customer-facing-frontend
+pnpm install
+pnpm dev                  # http://localhost:5173
+pnpm test                 # 166 tests; no backend needed
+pnpm typecheck &amp;&amp; pnpm lint &amp;&amp; pnpm build</pre>
+<p>Sign in with the seeded buyer from 2.5, browse, add to the cart, and check out with <code>4242 4242 4242 4242</code> (approved) or <code>4000 0000 0000 0002</code> (declined). The API address is <code>VITE_API_URL</code> (<code>.env.example</code> has the default). The front end was installed, tested and built from a clean copy of its tracked files, and click-tested against a freshly seeded database.</p>
+
+<p>The seller portal runs the same way, against the supplier API (<code>pnpm supplier-api</code> in <code>Backend/</code>):</p>
+<pre>cd ../Frontend/seller-portal
+pnpm install
+pnpm dev                  # http://localhost:5174
+pnpm test                 # 337 tests; no backend needed
+pnpm typecheck &amp;&amp; pnpm lint &amp;&amp; pnpm build</pre>
+<p>Seeded sellers (password <code>Password123!</code>): <code>priya@bindimedsupply.com.au</code> approved, <code>r.patel@clinicalsupplies.com.au</code> pending, <code>d.liu@cheaptestkits.com.au</code> rejected. <code>Frontend/seller-portal/docs/browser-checklist.md</code> is the walkthrough to run against a freshly seeded database.</p>
+
+<p>SA Admin runs the same way, against the admin API (<code>pnpm admin-api</code> in <code>Backend/</code>):</p>
+<pre>cd ../Frontend/admin-portal
+pnpm install
+pnpm dev                  # http://localhost:5175
+pnpm test                 # 243 tests; no backend needed
+pnpm typecheck &amp;&amp; pnpm lint &amp;&amp; pnpm build</pre>
+<p>Sign in as the seeded admin <code>a.morgan@sampleassist.com.au</code> (password <code>Password123!</code>); a new admin account needs a <code>@sampleassist.com.au</code> address. The queue starts with pending suppliers to review. <code>Frontend/admin-portal/docs/browser-checklist.md</code> is the walkthrough to run against a freshly seeded database.</p>
+
+<h3>2.8 Real email (optional)</h3>
+<p>Reset-password emails are sent through a Gmail account when it is configured, and are only logged otherwise (ADR 0046). In Google Cloud create an OAuth client (Web application) with the redirect address <code>http://127.0.0.1:53682/callback</code>, enable the Gmail API, add the sending account as a test user, and put the client ID and secret in <code>Backend/.env</code> (<code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>). Then run <code>pnpm mail:token</code>, sign in as the sending account, and restart the API; it saves the refresh token and sender address for you. While the OAuth client is in <i>Testing</i> mode the token expires after 7 days. Seeded addresses are fictional, so register a buyer with an inbox you own to see an email arrive.</p>
+
+<h2>3. What the brief asked and what was delivered</h2>
+<p>Section 3 of the brief defines Phase 1 as the committed deliverable. Each row below maps to it.</p>
+<table>
+  <thead><tr><th style="width:17%">Brief item</th><th style="width:11%">Status</th><th>How it was delivered</th></tr></thead>
+  <tbody>
+    <tr><td>Accounts and roles</td><td><span class="chip done">Done</span></td><td>Registration and login on all three apps. One account can hold several roles (buyer, seller, collection manager, admin); the seeded buyer holds two. Each app accepts only its own tokens (ADRs 0017–0019).</td></tr>
+    <tr><td>Catalogue and products</td><td><span class="chip done">Done</span></td><td>Sellers create, edit, publish and retire their own listings with images, category, GST-inclusive price and stock. Products are never hard-deleted because past orders refer to them (ADRs 0035, 0040).</td></tr>
+    <tr><td>Browse and search</td><td><span class="chip done">Done</span></td><td>Keyword search, category and price-range filters, sorting, paging and a detail page. Only published listings from approved sellers appear.</td></tr>
+    <tr><td>Cart and checkout</td><td><span class="chip done">Done</span></td><td>Cart with live prices and editable quantities. Checkout runs as one database transaction with a mock payment (ADRs 0023, 0024).</td></tr>
+    <tr><td>Orders</td><td><span class="chip done">Done</span></td><td>A cart with several sellers becomes one order per seller. Buyers see their history and can reorder; sellers get an orders table with dispatch and cancel; admins see every order and can export CSV (ADRs 0022, 0036, 0042).</td></tr>
+    <tr><td>Electronic invoice</td><td><span class="chip done">Done</span></td><td>A GST-inclusive tax invoice PDF with seller ABN, buyer details, lines, GST, totals, invoice number and date. It is generated once, stored, and re-downloadable by buyer, seller and admin.</td></tr>
+    <tr><td>Seller onboarding</td><td><span class="chip done">Done</span></td><td>Sign-up with ABN (checksum-validated), business name and contact; pending, approved and rejected states each have their own response.</td></tr>
+    <tr><td>Seller verification</td><td><span class="chip done">Done</span></td><td>Admin queue with approve and reject (a rejection needs a reason the seller sees). Approval is the switch that makes listings visible (ADR 0041).</td></tr>
+    <tr><td>CM ordering</td><td><span class="chip todo">Not started</span></td><td>The backend already holds the shared account, orders and catalogue. It needs the CM front end and a decision on single sign-on.</td></tr>
+    <tr><td>Inventory update</td><td><span class="chip part">Partly</span></td><td>Placing an order reduces the supplier's stock. Adding to the buyer's own inventory on receiving is deferred (section 7).</td></tr>
+    <tr><td>Shared data</td><td><span class="chip done">Done (backend)</span></td><td>One database and one user table, so the same account, orders and inventory serve every entry point. It will be demonstrable end to end once CM is built.</td></tr>
+  </tbody>
+</table>
+
+<h3>Payments and invoices (brief section 4)</h3>
+<p>Checkout is a realistic mock: it collects the order, confirms it and marks it paid, with no gateway and no money moving. The mock follows how Stripe's test mode behaves (outcome decided by the card number). Card number, CVC and expiry are never stored, only the last four digits and the brand. Every order gets a tax invoice PDF as the brief requires.</p>
+
+<h3>Beyond the Phase 1 table</h3>
+<p>Built because the screens and the admin role needed them: password reset and change, seller dashboard (orders awaiting dispatch with an SLA countdown, listing counts), seller business profile, admin profile, and the admin orders CSV export. Seller ABN format validation (a Phase 2 item in the brief) is included because the sign-up form needs it.</p>
+
+<h3>Front end: the customer marketplace</h3>
+<p>Every customer screen in the designs is built and connected to the real API: catalogue with filters, search, sorting and paging; product detail with suggestions; cart; checkout (delivery and payment, with the declined-card pop-up); order confirmation; My orders with status filters and order-number search; order detail with invoice download and reorder; sign-in, registration, forgot and reset password, session-expired and sign-out; and My profile (details, change password).</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack</td><td>React 19, Vite, TypeScript, Ant Design 6 and styled-components. State and API calls use Redux Toolkit with RTK Query, in the Collection Manager's feature-folder shape (<code>actions</code>, <code>slice</code>, <code>selector</code>, <code>types</code>). A store used by one page lives in that page's folder; a shared one in <code>src/store</code>.</td></tr>
+    <tr><td>API and sessions</td><td>One API client turns every failure into a single error shape and shows the backend's own messages. The access token lives in <code>sessionStorage</code>; a rejected token ends the session and shows "Session expired"; signing out clears all cached data. Route guards send visitors to sign in and bring them back.</td></tr>
+    <tr><td>Where the backend won over the designs</td><td>GST is the total divided by 11; no supplier rating; password rule, card rules and order statuses as the backend defines them; no current-password field on change password (ADR 0030); no PO number; the invoice is offered only once an order has dispatched.</td></tr>
+    <tr><td>Backend changes it needed</td><td>An order-number <code>search</code> on <code>GET /orders</code>, the invoice file name exposed over CORS, and optional real email (ADR 0046). All are small, additive and tested.</td></tr>
+    <tr><td>Accessibility</td><td>Automated checks (axe) run on every page and pop-up; one h1 per page, page titles announced, a skip link, named dialogs, labelled fields, and text colours that pass the WCAG AA contrast minimum. The brand blue was darkened to <code>#0958d9</code> so white text on buttons passes (<code>CLAUDE.md</code> updated).</td></tr>
+    <tr><td>Pop-ups and unsaved changes</td><td>Every pop-up (clear cart, remove item, reorder, declined card, sign out, session expired) shares one layout: an icon, a one-line summary, what changes, what stays the same and equal buttons, with copy checked against what the backend does (for example, a declined card leaves the cart untouched). My profile asks "Save your changes?" before it is left with edits.</td></tr>
+    <tr><td>Quality</td><td>166 front-end unit tests (helpers, forms, components, pop-ups, the profile page); the pages and the Redux store have no automated tests and are checked in the browser against the real API, since the sample data and fake backend were removed. Lint, type check and build clean. A walkthrough against a freshly seeded database covered sign-in, shopping, cart, checkout (declined and approved), orders, invoice, reorder, profile (including a password change and restore), sign-out and registration.</td></tr>
+    <tr><td>Not offered</td><td>"Notify me" on out-of-stock products. It was built first, but with no backend it promised an alert that never came, so it was removed; out-of-stock products show a disabled button (section 7).</td></tr>
+  </tbody>
+</table>
+
+<h3>Front end: the seller portal</h3>
+<p>Every seller screen in the designs is built and connected to the supplier API: sign-in, registration, forgot and reset password; the three application screens (under review, not approved with resubmit, approved) and the gate that sends a seller to the right one; the dashboard with the orders waiting to go out and their SLA countdowns; orders (search, status filters, sorting, paging), the fulfilment screen with its pick list, dispatch, cancel and invoice download; the catalogue (search, filters, sorting, low-stock banner, retire; price and stock are read-only in the list and changed on the edit page); add and edit product with up to four images, Save draft and Publish; and the business profile (contact and fulfilment settings, change password, sign out).</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack and structure</td><td>The same as the customer app (React 19, Vite, TypeScript, Ant Design 6, styled-components, Redux Toolkit with RTK Query, feature folders), with a left sidebar instead of a top bar and the seller's orange. About 35 generic files were copied rather than shared through a workspace package (decision recorded in its <code>ui-build-plan.md</code>); a shared package stays possible later.</td></tr>
+    <tr><td>Where the backend won over the designs</td><td>34 differences are listed in the plan's ledger, for example: sign-up has no "product categories" or "role" box (the profile derives categories from the seller's products), the status screens say "Sample Assist" not another company, dispatch sends no email, and sellers set their own prices directly.</td></tr>
+    <tr><td>Backend change it needed</td><td>One line: the supplier API exposes <code>Content-Disposition</code> over CORS so the invoice keeps its file name.</td></tr>
+    <tr><td>Colour and accessibility</td><td>White on the brand orange is only 2.4 to 1, so buttons use near-black text on orange and orange text is the darker <code>#ad4e00</code>. axe (WCAG 2.1 A and AA) found no violations on any page or pop-up after four fixes made in the final pass: unlabelled read-only fields, a details list without terms, links in running text told apart only by colour, and placeholder contrast. Below 992 px the sidebar becomes a menu button and drawer that a keyboard can reach.</td></tr>
+    <tr><td>Pop-ups and unsaved changes</td><td>Retire, cancel order, sign out and session expired share the same pop-up layout as the marketplace. The product form and the business profile ask "Save your changes?" (keep editing, discard, or save and go) when they are left with edits.</td></tr>
+    <tr><td>Quality</td><td>337 unit and component tests (the profile and product change detection, forms, tables, pick list, status gate, layouts); pages and the store are checked in the browser against the real API with the walkthrough in <code>docs/browser-checklist.md</code>. Lint, type check and build are clean.</td></tr>
+    <tr><td>Not built</td><td>Responsive page layouts (Phase 2); saving a half-filled product form across the 15-minute session; changing the sign-in email; restoring the pick list after a refresh (section 7).</td></tr>
+  </tbody>
+</table>
+
+<h3>Front end: SA Admin</h3>
+<p>Every admin screen in the designs is built and connected to the admin API: sign-in, creating an account (Sample Assist staff addresses only), forgot and reset password; the supplier verification queue with search, status tabs with counts, a banner and a sidebar badge; one application's review with the manual checklist and the approve and reject pop-ups; the all-orders list with payment and fulfilment filters, search, sorting, paging and Export CSV; an order's read-only detail with invoice download; and My profile (name, change password, sign out).</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack and structure</td><td>The same as the seller portal, with its own purple and a sidebar of Suppliers (with a badge), Orders and My Profile. The shared files were copied again, so there are now three copies of about 35 files.</td></tr>
+    <tr><td>Where the backend won over the designs</td><td>20 differences are listed in the plan's ledger. The main ones: no "keep me signed in"; no invitation code on the register form (ADR 0038), where the backend instead requires a terms tick and a staff email domain; only the name is editable on the profile; no "Invite administrator" card; the order filters use the backend's real payment statuses and fulfilment stages; and the verification checklist is a screen-only aid.</td></tr>
+    <tr><td>Backend change it needed</td><td>One line: the admin API exposes <code>Content-Disposition</code> over CORS so the CSV export and the invoice keep their file names.</td></tr>
+    <tr><td>Decisions it makes</td><td>Approve and reject are the only actions: both email the applicant, neither can be undone here (there is no suspend), and the pop-ups say so. A decided application shows who decided it, when, and the reason the applicant was given. If another admin decides first, the screen shows the backend's 409 message and refreshes.</td></tr>
+    <tr><td>Accessibility</td><td>The purple <code>#722ed1</code> is 6.9 to 1 against white, so it needs no contrast workaround. axe (WCAG 2.1 A and AA) found no violations on any of 20 signed-in pages and pop-ups, nor on the sign-in, register, forgot, reset and session-expired pages. Skip link, one <code>h1</code> per page, brand-first titles, and a menu drawer below 992 px that a keyboard can reach.</td></tr>
+    <tr><td>Quality</td><td>243 unit and component tests (queue, filters and sort in the address, the decision pop-ups, order and profile pages, layouts); pages and the store are checked in the browser against the real API with the walkthrough in <code>docs/browser-checklist.md</code>. Lint, type check and build are clean. The walkthrough found two bugs the tests had missed (a previous record showing after a bad link, and a crash when the profile arrived after the page first rendered); both are fixed with regression tests, and the second was also fixed in the customer app.</td></tr>
+    <tr><td>Not built</td><td>Responsive page layouts (Phase 2); inviting administrators; suspending a supplier; a real check that an admin owns their mailbox (section 7).</td></tr>
+  </tbody>
+</table>
+
+<h3>Working guardrails (brief section 7)</h3>
+<table>
+  <thead><tr><th>Guardrail</th><th>How it is met</th></tr></thead>
+  <tbody>
+    <tr><td>Everything runs locally</td><td>Docker Compose for Postgres; no cloud. The one deliberate exception is the optional Gmail sending, off unless configured (ADR 0046)</td></tr>
+    <tr><td>Never commit secrets</td><td><code>.env</code> is git-ignored; only <code>.env.example</code> (local development values, blanks for the Google settings) is committed</td></tr>
+    <tr><td>No real payments or data</td><td>Mock checkout; all seed data is fictional</td></tr>
+    <tr><td>Validate input, hash passwords, guard every route by role, never expose one user's data to another</td><td>See section 6</td></tr>
+    <tr><td>Database changes via migrations</td><td>20 migrations; <code>synchronize</code> is off everywhere</td></tr>
+    <tr><td>Record decisions; keep the README current</td><td>46 decision records; a short README for a clean checkout, backend and front end</td></tr>
+    <tr><td>Runs from a clean checkout</td><td>Verified for the backend by installing, building, type-checking and linting a fresh clone, and migrating, seeding and testing a fresh scratch database; verified for the front end by installing, testing and building a clean copy of its tracked files</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Architecture</h2>
+<p>The brief's most important rule is <b>one system with several entry points, not systems that sync</b>. The backend is a pnpm and Turborepo monorepo of three NestJS apps over shared packages and a single PostgreSQL database.</p>
+
+<svg viewBox="0 0 700 330" width="100%" role="img" aria-label="Architecture: front ends, three APIs, shared packages, one database">
+  <rect x="0" y="0" width="700" height="330" fill="#ffffff"/>
+  <g font-size="11" fill="#1f2937">
+    <text x="12" y="18" font-weight="700" fill="#6b7280">FRONT ENDS (the CM store is next)</text>
+    <rect x="12" y="26" width="160" height="40" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-dasharray="4 3"/><text x="92" y="44" text-anchor="middle">Collection Manager store</text><text x="92" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">SSO users</text>
+    <rect x="192" y="26" width="150" height="40" rx="6" fill="#dcfce7" stroke="#15803d"/><text x="267" y="44" text-anchor="middle">Customer marketplace</text><text x="267" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">any buyer</text>
+    <rect x="362" y="26" width="150" height="40" rx="6" fill="#dcfce7" stroke="#15803d"/><text x="437" y="44" text-anchor="middle">Seller portal</text><text x="437" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">verified suppliers</text>
+    <rect x="532" y="26" width="156" height="40" rx="6" fill="#dcfce7" stroke="#15803d"/><text x="610" y="44" text-anchor="middle">SA Admin</text><text x="610" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">Sample Assist staff</text>
+    <rect x="192" y="106" width="150" height="52" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="267" y="128" text-anchor="middle" font-weight="700">customer-facing</text><text x="267" y="144" text-anchor="middle" fill="#374151" font-size="9.5">port 8001 · buyers (and CM)</text>
+    <rect x="362" y="106" width="150" height="52" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="437" y="128" text-anchor="middle" font-weight="700">supplier-api</text><text x="437" y="144" text-anchor="middle" fill="#374151" font-size="9.5">port 8002 · sellers</text>
+    <rect x="532" y="106" width="156" height="52" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="610" y="128" text-anchor="middle" font-weight="700">admin-api</text><text x="610" y="144" text-anchor="middle" fill="#374151" font-size="9.5">port 8003 · staff</text>
+    <rect x="12" y="106" width="160" height="52" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-dasharray="4 3"/><text x="92" y="128" text-anchor="middle" fill="#6b7280">uses customer-facing</text><text x="92" y="144" text-anchor="middle" fill="#6b7280" font-size="9.5">same endpoints, same data</text>
+    <g stroke="#9ca3af" stroke-width="1.4" fill="none"><path d="M92 66 V106"/><path d="M267 66 V106"/><path d="M437 66 V106"/><path d="M610 66 V106"/><path d="M92 158 V176 H267 V158" stroke-dasharray="4 3"/></g>
+    <rect x="8" y="80" width="192" height="16" fill="#ffffff"/><text x="12" y="92" font-weight="700" fill="#6b7280">BACKEND — BUILT AND TESTED</text>
+    <rect x="12" y="186" width="676" height="76" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+    <text x="24" y="204" font-weight="700" fill="#0b1f4d">Shared packages (compiled once, used by all three apps)</text>
+    <rect x="24" y="214" width="204" height="38" rx="5" fill="#fff" stroke="#93c5fd"/><text x="126" y="230" text-anchor="middle" font-weight="700">auth</text><text x="126" y="244" text-anchor="middle" font-size="9.5" fill="#374151">JWT, guards, roles</text>
+    <rect x="248" y="214" width="204" height="38" rx="5" fill="#fff" stroke="#93c5fd"/><text x="350" y="230" text-anchor="middle" font-weight="700">common</text><text x="350" y="244" text-anchor="middle" font-size="9.5" fill="#374151">config, errors, PDF, invoice, mail</text>
+    <rect x="472" y="214" width="204" height="38" rx="5" fill="#fff" stroke="#93c5fd"/><text x="574" y="230" text-anchor="middle" font-weight="700">entities</text><text x="574" y="244" text-anchor="middle" font-size="9.5" fill="#374151">17 tables, migrations, seed</text>
+    <path d="M350 262 V282" stroke="#1d4ed8" stroke-width="1.6" fill="none"/>
+    <rect x="212" y="282" width="276" height="38" rx="8" fill="#0b1f4d"/><text x="350" y="299" text-anchor="middle" fill="#fff" font-weight="700">One PostgreSQL 16 database (Docker)</text><text x="350" y="313" text-anchor="middle" fill="#bfdbfe" font-size="9.5">one user table · one order history · one inventory</text>
+  </g>
+</svg>
+
+<h3>How the code is organised</h3>
+<ul>
+  <li><b>One module per business area</b> inside each app (auth, products, cart, checkout, orders, catalogue, suppliers…), each with controller, service, DTOs and types, so a feature can be found and changed in one place.</li>
+  <li><b>Shared behaviour lives in packages</b>, not copied between apps: the one shared rule for "is this product orderable" is used by the catalogue, the cart and checkout.</li>
+  <li><b>The same order, invoice and stock rules serve every app.</b> The buyer and the seller download the very same stored PDF.</li>
+</ul>
+
+<h2>5. Decisions and why</h2>
+<p>Every decision has a short record in <code>docs/adr</code> (context, decision, cost). These are the ones that shape the system most. The <b>industry practice</b> column names the standard the choice follows.</p>
+<table>
+  <thead><tr><th style="width:21%">Decision</th><th style="width:31%">Why</th><th style="width:34%">Industry practice followed</th><th style="width:14%">Record</th></tr></thead>
+  <tbody>
+    <tr><td><b>One system, one database</b></td><td>The brief's core rule. A user who is both a CM user and a buyer must see one account, order history and inventory.</td><td>Single source of truth; avoids sync jobs and the data drift they cause.</td><td>Brief §2C</td></tr>
+    <tr><td><b>Schema changes only by migrations</b></td><td>Anyone can rebuild the exact database from nothing, and every change is reviewable.</td><td>Schema as versioned code (the Flyway and Liquibase approach); <code>synchronize</code> off.</td><td>0001</td></tr>
+    <tr><td><b>One account, many roles; per-app tokens</b></td><td>A person can be buyer and seller. A token for one app must not work on another.</td><td>Role-based access control; JWT <code>audience</code> claim; bcrypt (10 rounds) for passwords.</td><td>0017, 0019</td></tr>
+    <tr><td><b>Short tokens that can be revoked</b></td><td>Logging out or changing a password must stop old tokens at once, even though JWTs are stateless.</td><td>15-minute access tokens plus a server-side token version.</td><td>0018, 0030</td></tr>
+    <tr><td><b>The token decides whose data you see</b></td><td>Endpoints never take a user id. Services filter every query by the signed-in user, so no one can ask for another's data.</td><td>Prevents insecure direct object references (OWASP A01). Another user's record returns the same 404 as a missing one, so existence is not leaked.</td><td>0025</td></tr>
+    <tr><td><b>Money is a string, never a float</b></td><td>Floating point cannot hold cents exactly; GST and totals must reconcile to the cent.</td><td>Exact decimal arithmetic for money, with the database <code>numeric</code> type.</td><td>0008</td></tr>
+    <tr><td><b>Prices freeze at checkout; one order per seller</b></td><td>Editing a price must never rewrite past orders. Fulfilment, SLA and the tax invoice are all per seller (an invoice has exactly one seller).</td><td>Immutable order snapshots; Australian tax-invoice rules.</td><td>0022, 0023</td></tr>
+    <tr><td><b>Checkout is one transaction</b></td><td>Re-check the cart, reserve stock, then charge; a double click must not create two orders or oversell.</td><td>ACID transaction with row locks; order numbers from a database sequence, not <code>count()+1</code>.</td><td>0022, 0023</td></tr>
+    <tr><td><b>Invoices are stored documents</b></td><td>Seller and buyer details are copied onto the invoice when it is issued, so renaming a business never changes a past invoice. One PDF serves all three audiences.</td><td>Immutable financial records; own gapless-style sequence; an advisory lock so two simultaneous downloads cannot issue two invoices.</td><td>0036, 0043</td></tr>
+    <tr><td><b>Mock payment, no card data kept</b></td><td>Safe to run locally and meets the brief. Only last four digits and brand are stored.</td><td>PCI DSS (never store the CVC or full card number); modelled on Stripe's test cards. A database check fails if a card column ever appears.</td><td>0024</td></tr>
+    <tr><td><b>Password reset that leaks nothing</b></td><td>The same reply whether or not the email exists; links are single-use and short-lived.</td><td>256-bit random token, only its SHA-256 hash stored; anti-enumeration response; rate limiting on auth routes.</td><td>0029, 0020</td></tr>
+    <tr><td><b>Admin sign-up limited to staff domains</b></td><td>The brief has no admin invitation flow, and an open admin sign-up would be unsafe.</td><td>Allow-list by email domain. Honest limit: it is a speed bump, not proof of identity.</td><td>0038</td></tr>
+    <tr><td><b>Configuration from the environment</b></td><td>Local values stay out of git, and a missing variable fails at boot with a clear message.</td><td>Twelve-factor config; validate on start.</td><td>0002</td></tr>
+    <tr><td><b>Decisions written down</b></td><td>The brief asks for traceable decisions and a current README.</td><td>Architecture Decision Records (Nygard format).</td><td>docs/adr</td></tr>
+  </tbody>
+</table>
+
+<h3>Questions the brief left open, and how they were settled</h3>
+<table>
+  <thead><tr><th style="width:30%">Question</th><th>Answer and where it is recorded</th></tr></thead>
+  <tbody>
+    <tr><td>Seller and buyer status words differ</td><td>One backend status, with the seller's five screens layered on top. A new order stays "new" until dispatched (ADR 0036).</td></tr>
+    <tr><td>Why a seller cancels an order</td><td>A fixed list of reasons (out of stock, cannot meet dispatch SLA, pricing error, other) (ADR 0036).</td></tr>
+    <tr><td>When a seller sees the "approved" screen</td><td>Once, on the first sign-in after approval, tracked on the profile (ADR 0032).</td></tr>
+    <tr><td>Admin invitations</td><td>Dropped; admin sign-up is domain-limited instead (ADR 0038).</td></tr>
+    <tr><td>How CM users sign in, and how CM inventory decreases</td><td><b>Still open</b>; see section 7.</td></tr>
+  </tbody>
+</table>
+
+<h2>6. Quality and security</h2>
+<h3>Testing</h3>
+<table>
+  <thead><tr><th>Level</th><th>Count</th><th>What it covers</th></tr></thead>
+  <tbody>
+    <tr><td>Unit tests</td><td>191</td><td>Shared rules and helpers: auth service, invoice and PDF service (it kills a real Chromium to prove recovery), CSV, ABN and name validation, error filter</td></tr>
+    <tr><td>End-to-end tests</td><td>739</td><td>Every API route through HTTP against the real database: customer 117, supplier 360, admin 262. They cover auth, ownership, validation, checkout, invoices, and admin verification</td></tr>
+    <tr><td>Database checks</td><td>33</td><td><code>db:verify</code>: schema shape, no card columns, and business rules in the data</td></tr>
+  </tbody>
+</table>
+<p>Every suite passes on a freshly migrated and seeded database. I ran 736 of the 739 end-to-end tests against a scratch database so the working data stayed intact. The other three only assert that the database is named <code>sa_marketplace</code>, so they were run against the default database and also pass. Type checks and lint pass across all packages.</p>
+
+<h3>Security checklist</h3>
+<table>
+  <thead><tr><th style="width:30%">Concern</th><th>Control</th></tr></thead>
+  <tbody>
+    <tr><td>Input validation</td><td>One global validation pipe: unknown fields are rejected, types are converted, text is trimmed; path parameters like order numbers are format-checked before any query</td></tr>
+    <tr><td>Passwords and tokens</td><td>bcrypt hashing; signed JWTs with expiry and audience; revocation by token version; reset tokens stored only as hashes</td></tr>
+    <tr><td>Access control</td><td>Guards sit on whole controllers, so a new route cannot be added unprotected; role is checked as well as audience</td></tr>
+    <tr><td>Data isolation</td><td>Ownership is part of every query; suppliers see only their own listings and orders; competitors' data is never reachable</td></tr>
+    <tr><td>Abuse limits</td><td>Login, sign-up and reset are rate limited to 5 per minute per IP; JSON body size is capped; HTTP security headers via Helmet</td></tr>
+    <tr><td>Payments and privacy</td><td>No card data stored; fake seed data only; secrets in <code>.env</code>, never in git</td></tr>
+    <tr><td>Reliability</td><td>The PDF renderer restarts itself if Chromium dies, retries once, and times out instead of hanging</td></tr>
+  </tbody>
+</table>
+
+<h2>7. Known limitations and open items</h2>
+<table>
+  <thead><tr><th style="width:27%">Item</th><th>State and what is needed</th></tr></thead>
+  <tbody>
+    <tr><td><b>CM ordering and single sign-on</b></td><td>Not built. Open question: does an SSO-provisioned user also get a password, or can the marketplace accept SSO for them? Needs the CM team's input and the CM front end.</td></tr>
+    <tr><td><b>Inventory on receiving</b></td><td>Not built. Nothing marks an order "received" yet, so the buyer's shelf stock never increases. Also open: CM stock can only go up unless CM already records consumption or we add a manual adjustment.</td></tr>
+    <tr><td><b>"Keep me signed in"</b></td><td>Not built by choice. Tokens last 15 minutes with no renewal; the front end shows "Session expired" and asks the buyer to sign in again. The design if revived is recorded in ADR 0045.</td></tr>
+    <tr><td><b>No anonymous browsing</b></td><td>The catalogue needs a sign-in (ADR 0021). Easy to relax for the public storefront if wanted.</td></tr>
+    <tr><td><b>Email is opt-in</b></td><td>Reset emails go through a Gmail account when configured (ADR 0046) and are logged otherwise. The Google OAuth client is in Testing mode, so its token expires every 7 days (run <code>pnpm mail:token</code> again). Gmail has sending limits; use a transactional provider for a real marketplace. A "your password was changed" email is not built.</td></tr>
+    <tr><td><b>Rate limits are in memory</b></td><td>Fine for one local instance; a shared store (Redis) would be needed to run several instances.</td></tr>
+    <tr><td><b>Local-development caveats</b></td><td><code>.env.example</code> carries a development JWT secret (replace it for anything shared). Restarting dev servers can leave old Chromium processes running. The end-to-end tests expect seeded data.</td></tr>
+    <tr><td><b>Back-in-stock alerts</b></td><td>Not built. It needs a table of who is waiting, an endpoint, and an email when a supplier restocks (about half a day now that email exists). Until then out-of-stock products show a disabled button.</td></tr>
+    <tr><td><b>CM store front end</b></td><td>Not started. The customer marketplace, the seller portal and SA Admin have front ends.</td></tr>
+    <tr><td><b>Admin sign-up is a speed bump</b></td><td>Registration only checks the email's domain (ADR 0038); nothing proves the person owns the mailbox, so anyone can create <code>anything@sampleassist.com.au</code> and approve suppliers. Acceptable for local fake data, and it must be replaced before real use, for example by an existing admin approving each new admin or by a verified email.</td></tr>
+    <tr><td><b>Approving a supplier cannot be undone</b></td><td>There is no suspend or offboarding in Phase 1, so a wrong approval has no fix from the screens. The pop-up says so before it is confirmed.</td></tr>
+    <tr><td><b>SA Admin on small screens</b></td><td>The navigation adapts below 992 px but the pages are desktop-only, as in the seller portal. Responsive layouts are Phase 2.</td></tr>
+    <tr><td><b>Seller portal on small screens</b></td><td>The navigation adapts below 992 px but the pages are desktop-only: tables scroll sideways. A seller filling the long product form can also be signed out by the 15-minute session and lose it. Responsive layouts are Phase 2.</td></tr>
+    <tr><td><b>Pick list is not saved</b></td><td>The ticks live on the screen only; the backend has no status for "picking". A refresh forgets them.</td></tr>
+    <tr><td><b>Seeded product images</b></td><td>The seeded products point at image files that do not exist, so the browser logs a failed request for each and cards show a category icon instead. Products created through the seller API show real images.</td></tr>
+    <tr><td><b>Retiring a listing is final</b></td><td>In Phase 1 a retired product is read-only and cannot be published again.</td></tr>
+  </tbody>
+</table>
+
+<h2>8. Next steps</h2>
+<h3>8.1 Front-end development (in progress)</h3>
+<p>The brief specifies React with Vite. The designs for all four surfaces already exist: 13 marketplace screens, 18 seller screens, 11 admin screens, and the CM store. Marketplace, seller and admin use Ant Design, each with its own accent colour; the CM store follows the existing CM look instead.</p>
+<table>
+  <thead><tr><th style="width:5%">#</th><th style="width:27%">Step</th><th>State and what it involves</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>Foundation</b></td><td><span class="chip done">Done</span> Vite and React project, API client with token handling (Bearer header, a 401 ends the session), routing, layouts, shared components. The client is hand-written with typed endpoints rather than generated from Swagger.</td></tr>
+    <tr><td>2</td><td><b>Customer marketplace</b></td><td><span class="chip done">Done</span> All screens, connected to the API and tested (section 3).</td></tr>
+    <tr><td>3</td><td><b>Seller portal</b></td><td><span class="chip done">Done</span> All screens, connected to the supplier API and tested (section 3).</td></tr>
+    <tr><td>4</td><td><b>SA Admin</b></td><td><span class="chip done">Done</span> All screens, connected to the admin API and tested (section 3).</td></tr>
+    <tr><td>5</td><td><b>CM store</b></td><td><span class="chip todo">Not started</span> Catalogue, cart, checkout and my orders inside Collection Manager, plus the SSO decision. Because the two buyer surfaces share no component library, each buyer feature is one backend ticket and two front-end tickets.</td></tr>
+  </tbody>
+</table>
+<p>The seller portal and SA Admin copied the customer app's generic files instead of using a shared package, so about 35 files now exist three times. Decide whether to extract a shared package before the CM store makes it four, or to keep copying with identical file names and tests; a fix to a copied file goes into every copy (one bug fix already had to be made in two apps). Each feature keeps the brief's definition of done: a small, self-reviewed pull request; tests; clean lint and type checks; and it works end to end through the UI.</p>
+
+<h3>8.2 Finish the remaining Phase 1 items</h3>
+<ul>
+  <li>Decide and build <b>CM single sign-on</b> and the CM catalogue and ordering screens.</li>
+  <li>Add <b>"mark as received"</b> so a delivered order increases the buyer's inventory, and settle how CM consumption is recorded.</li>
+  <li>Add refresh tokens only if the 15-minute sign-out proves a problem in use.</li>
+  <li>Build back-in-stock alerts if wanted, and a "your password was changed" email.</li>
+</ul>
+
+<h3>8.3 Later phases (from the brief, once Phase 1 is complete and solid)</h3>
+<table>
+  <thead><tr><th style="width:22%">Phase</th><th>Candidates</th></tr></thead>
+  <tbody>
+    <tr><td><b>Phase 2</b><br>Marketplace depth</td><td>Richer filters and sorting (brand, test type, pack size, rating, newest, popularity); seller sales analytics and low-stock alerts; seller storefront pages, ratings and reviews; order tracking with status notifications; ABN lookup to help admin review; inventory reorder thresholds, purchase-order history and a stock movement log.</td></tr>
+    <tr><td><b>Phase 3</b><br>Nice to have</td><td>Redis caching for catalogue and search (the explicit bonus goal); real payment integration in test mode (for example Stripe test keys, never committed); moving email from Gmail to a transactional provider (only <code>MailService</code>'s body changes); discount codes and trade pricing tiers; an admin reporting dashboard.</td></tr>
+    <tr><td><b>Always out of scope</b></td><td>Real card processing, shipping-carrier integrations, mobile apps, multi-currency, and production deployment.</td></tr>
+  </tbody>
+</table>
+
+<h3>8.4 Handover</h3>
+<p>The brief asks for a final demo, handover notes and a short write-up of what is built, what is not, and known issues. This document is the write-up; the demo can follow the five-minute walkthrough in section 2.5.</p>
+
+
+<h2>9. Recommendations</h2>
+<p>In the order I would tackle them. The first four unblock the rest of the project.</p>
+<table>
+  <thead><tr><th style="width:4%">#</th><th style="width:30%">Recommendation</th><th>Why, and who</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>Merge <code>phase-1-completed</code> into <code>main</code> through a reviewed pull request</b></td><td>The brief wants work to land on <code>main</code> by pull request and never broken. The branch now holds the backend and both built front ends; it is large, so review it in the commit order set out in <code>docs/report/pull-request-guide.md</code> rather than as one diff. Make the merge check: type check, lint, <code>db:verify</code> and every test suite on a freshly seeded database. <i>Tech lead.</i></td></tr>
+    <tr><td>2</td><td><b>Settle the two open decisions before building CM</b></td><td>(a) How CM users sign in: does an SSO-provisioned user also get a password, or does the marketplace accept SSO? (b) Inventory: what marks an order "received", and how does CM record consumption, since stock can otherwise only go up. These shape the CM screens and the data flow. <i>Tech lead with the CM team.</i></td></tr>
+    <tr><td>3</td><td><b>Build the CM store next</b></td><td>Three front ends now prove the structure and the API (section 8.1). Decide first whether they share a workspace package: three copies of about 35 files is where copying stops paying off, and a fourth would make it worse. None of the front ends has page tests (see Quality above), so a small end-to-end suite against the seeded API would close that gap for all of them. The CM store also needs recommendation 2 settled first.</td></tr>
+    <tr><td>4</td><td><b>Use a separate test database</b></td><td>The end-to-end tests expect the seeded data, so manual testing on the development database makes some fail, and one test asserts the database name. A dedicated test database (for example set through <code>DB_NAME</code>) keeps development data safe and makes the suites repeatable.</td></tr>
+    <tr><td>5</td><td><b>Add automated checks when the team is ready</b></td><td>The brief rules out CI/CD for now. Later, a pipeline running lint, type check, unit and end-to-end tests on a fresh database would have caught the one clean-checkout bug found during handover.</td></tr>
+    <tr><td>6</td><td><b>Decide on anonymous browsing</b></td><td>The catalogue needs a sign-in today (ADR 0021). If the public storefront should be browsable without an account, relax that rule and keep checkout signed in. <i>Product decision.</i></td></tr>
+    <tr><td>7</td><td><b>Tidy the development defaults</b></td><td>Replace the development <code>JWT_SECRET</code> in <code>.env.example</code> with a placeholder, and have each developer generate their own.</td></tr>
+    <tr><td>8</td><td><b>Revisit sessions now that the front end exists</b></td><td>Add refresh tokens only if the 15-minute sign-out hurts. The design is recorded in ADR 0045.</td></tr>
+    <tr><td>9</td><td><b>Handle the Google credentials safely</b></td><td>Keep them only in <code>.env</code>. Delete any OAuth client whose secret was shared outside the team, publish the OAuth app or use a transactional provider if the 7-day token expiry becomes a nuisance, and never commit the refresh token.</td></tr>
+  </tbody>
+</table>
+
+<h3>Main risks</h3>
+<table>
+  <thead><tr><th style="width:30%">Risk</th><th style="width:14%">Level</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr><td>CM sign-in and inventory rules are undecided</td><td><span class="chip todo">High</span></td><td>Resolve in recommendation 2 before CM screens are built; the backend already shares one account and one database.</td></tr>
+    <tr><td>Invoice PDFs depend on a local Chromium</td><td><span class="chip part">Medium</span></td><td>The renderer restarts itself and retries (ADR 0043). Any future hosting must provide Chromium or move PDF rendering to a separate service.</td></tr>
+    <tr><td>Tests coupled to seeded data</td><td><span class="chip part">Medium</span></td><td>Recommendation 4.</td></tr>
+    <tr><td>Rate limits are single-instance</td><td><span class="chip part">Low</span></td><td>Fine locally; a shared store such as Redis is needed before running several instances.</td></tr>
+    <tr><td>Gmail sending depends on a Testing-mode OAuth token</td><td><span class="chip part">Low</span></td><td>It expires every 7 days and Gmail has sending limits. Email is opt-in and failures never break a request; move to a transactional provider for real use (ADR 0046).</td></tr>
+    <tr><td>Admin sign-up only checks the email domain</td><td><span class="chip part">Medium</span></td><td>Fine for local fake data; replace it before any real use (section 7, ADR 0038).</td></tr>
+    <tr><td>Three copies of the shared front-end files</td><td><span class="chip part">Medium</span></td><td>Same names and tests everywhere, and a fix goes into every copy; decide on a shared package before the CM store (recommendation 3).</td></tr>
+    <tr><td>Knowledge held by one developer</td><td><span class="chip done">Low</span></td><td>Reduced by 46 decision records, READMEs that run from a clean checkout, and this report.</td></tr>
+  </tbody>
+</table>
+
+<h2 class="pagebreak">Appendix: decision records</h2>
+<p class="muted">Each is a short file in <code>Backend/docs/adr</code> with context, the decision and its cost.</p>
+<div class="two">
+<p><b>0001</b> Hand-written SQL migrations, not generated ones</p>
+<p><b>0002</b> Local .env instead of AWS AppConfig</p>
+<p><b>0003</b> Real HTTP status codes, not always-200</p>
+<p><b>0004</b> Static module imports, not runtime discovery</p>
+<p><b>0005</b> Intl.DateTimeFormat instead of moment</p>
+<p><b>0006</b> A naming strategy instead of explicit column names</p>
+<p><b>0007</b> uuidExtension: 'pgcrypto' for gen_random_uuid parity</p>
+<p><b>0008</b> Money stays a string, never a float</p>
+<p><b>0009</b> Timestamps declared on every entity, no base class</p>
+<p><b>0010</b> The seed clears its tables and generates ids</p>
+<p><b>0011</b> Lowercase email storage, not a functional index</p>
+<p><b>0012</b> ON DELETE RESTRICT by default</p>
+<p><b>0013</b> One validation pipe, no hand-written value conversion</p>
+<p><b>0014</b> The exception filter keeps the status of exposed 4xx errors</p>
+<p><b>0015</b> Middleware wildcard is '*' on Nest 10</p>
+<p><b>0016</b> Each app owns its port; no shared PORT</p>
+<p><b>0017</b> JWT access tokens via Passport, shared in packages/auth</p>
+<p><b>0018</b> Logout bumps a token version on the user row</p>
+<p><b>0019</b> Each app has its own token audience and allowed roles</p>
+<p><b>0020</b> Login and sign-up are rate limited per IP, in memory</p>
+<p><b>0021</b> The catalogue requires sign-in</p>
+<p><b>0022</b> Order numbers come from a Postgres sequence, not count()+1</p>
+<p><b>0023</b> Checkout re-validates the cart and reserves stock before charging</p>
+<p><b>0024</b> Mock payment gateway: fixed test numbers, no card data stored</p>
+<p><b>0025</b> Ownership checks return 404, not 403</p>
+<p><b>0026</b> Reorder repopulates the cart; it never creates an order directly</p>
+<p><b>0027</b> Profile enrichment stays app-side; packages/auth stays generic</p>
+<p><b>0028</b> Profile edit excludes email, password and organisation</p>
+<p><b>0029</b> Password reset: opaque hashed tokens, no enumeration, session-wide invalidation</p>
+<p><b>0030</b> Change password: no current-password check, session survives its own token bump, real-length dots</p>
+<p><b>0031</b> Seller registration: pending profile, split contact name, form fields without a home</p>
+<p><b>0032</b> Seller application status: tracked dates, a persisted acknowledgement, resubmission</p>
+<p><b>0033</b> Every date-time is a UTC instant; no bare date columns</p>
+<p><b>0034</b> Seller dashboard: approval guard, order buckets, what the counts mean</p>
+<p><b>0035</b> Seller catalogue: one product form, images in the same request, local image storage</p>
+<p><b>0036</b> Seller orders: dispatch, cancel, and one shared invoice</p>
+<p><b>0037</b> Seller business profile: what can be edited, the password rule, names that must fit</p>
+<p><b>0038</b> Admin auth: sign-up limited to allowed email domains, no invitations</p>
+<p><b>0039</b> Admin profile: the name only, the password rule, and a recorded last sign-in</p>
+<p><b>0040</b> Product categories are worked out from a supplier's products</p>
+<p><b>0041</b> Admin supplier verification: the queue, the application screen and the decision</p>
+<p><b>0042</b> Admin orders oversight and the CSV export</p>
+<p><b>0043</b> The PDF browser relaunches and retries when Chromium dies</p>
+<p><b>0044</b> Swagger fields are declared explicitly where auto-detection fails</p>
+<p><b>0045</b> "Keep me signed in" (refresh tokens) is deferred, with the design if revived</p>
+<p><b>0046</b> Real email through Gmail: opt-in, never waited for, never logs the link</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { padding: 24px; gap: 14px; }
+  .lbl { font-family: 'Roboto'; font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #8A95A6; }
+  .field { font-family: 'Inter'; display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; font-weight: 500; color: #4B5767; }
+  input, select { font-family: 'Inter'; font-size: 14px; padding: 10px 12px; border-radius: 6px; border: 1px solid #D8DFE8; background: #fff; color: #00004C; outline: none; }
+  input:focus { border-color: #01B4D2; box-shadow: 0 0 0 3px rgba(1,180,210,0.25); }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .err input { border-color: #FD0000; }
+  .err .hint { font-size: 11px; color: #FD0000; }
+</style></head><body>
+<div class="lbl">Form inputs · Inter</div>
+<div class="row">
+  <div class="field"><label>Donor ID</label><input value="D-10428" /></div>
+  <div class="field"><label>Collector</label><select><option>R. Chen</option></select></div>
+  <div class="field err"><label>Sample seal</label><input value="" placeholder="Scan barcode" /><span class="hint">Required — scan or enter manually</span></div>
+</div>
+</body></html>

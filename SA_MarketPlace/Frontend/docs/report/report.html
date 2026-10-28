@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SA Marketplace — Front-end Hand-over Report</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+  :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#1d4ed8; --soft:#eff6ff; --ok:#15803d; --okbg:#dcfce7; --warn:#a16207; --warnbg:#fef9c3; --no:#b91c1c; --nobg:#fee2e2; }
+  * { box-sizing: border-box; }
+  body { font-variant-ligatures: none; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.45; margin: 0; }
+  h1 { font-size: 25pt; line-height: 1.15; margin: 0 0 4pt; color: #0b1f4d; }
+  h2 { font-size: 14.5pt; margin: 20pt 0 6pt; color: #0b1f4d; border-bottom: 2px solid var(--accent); padding-bottom: 3pt; break-after: avoid; }
+  h3 { font-size: 11pt; margin: 13pt 0 4pt; color: var(--accent); break-after: avoid; }
+  p { margin: 4pt 0 6pt; }
+  ul, ol { margin: 3pt 0 6pt; padding-left: 16pt; }
+  li { margin: 1.5pt 0; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.6pt; background: #f3f4f6; padding: 0.5pt 3pt; border-radius: 3px; }
+  pre { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.4pt; background: #0f172a; color: #e2e8f0; padding: 7pt 9pt; border-radius: 5px; margin: 5pt 0 8pt; white-space: pre-wrap; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 5pt 0 9pt; font-size: 9pt; }
+  th { text-align: left; background: #0b1f4d; color: #fff; padding: 4pt 6pt; font-weight: 600; }
+  td { padding: 4pt 6pt; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr { break-inside: avoid; }
+  tbody tr:nth-child(even) td { background: #f9fafb; }
+  .muted { color: var(--muted); }
+  .cover { padding: 6pt 0 10pt; border-bottom: 1px solid var(--line); margin-bottom: 8pt; }
+  .eyebrow { text-transform: uppercase; letter-spacing: 1.6px; font-size: 8.5pt; color: var(--accent); font-weight: 700; margin-bottom: 6pt; }
+  .meta { font-size: 9pt; color: var(--muted); margin-top: 8pt; }
+  .meta b { color: var(--ink); }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7pt; margin: 10pt 0; }
+  .tile { background: var(--soft); border-radius: 6px; padding: 8pt 9pt; }
+  .tile .n { font-size: 17pt; font-weight: 700; color: #0b1f4d; line-height: 1.1; }
+  .tile .l { font-size: 8.3pt; color: var(--muted); }
+  .box { background: var(--soft); border-left: 4px solid var(--accent); padding: 6pt 10pt; margin: 7pt 0; border-radius: 0 5px 5px 0; break-inside: avoid; }
+  .box.warn { background: var(--warnbg); border-left-color: #ca8a04; }
+  .chip { display: inline-block; font-size: 8pt; font-weight: 700; padding: 1pt 6pt; border-radius: 9px; white-space: nowrap; }
+  .done { background: var(--okbg); color: var(--ok); } .part { background: var(--warnbg); color: var(--warn); } .todo { background: var(--nobg); color: var(--no); }
+  .step { display: flex; gap: 8pt; margin: 6pt 0; break-inside: avoid; }
+  .step .num { flex: 0 0 18pt; height: 18pt; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 9pt; text-align: center; line-height: 18pt; margin-top: 1pt; }
+  .step .body { flex: 1; }
+  .step .body > p:first-child { margin-top: 0; font-weight: 600; }
+  .swatch { display: inline-block; width: 8pt; height: 8pt; border-radius: 2px; vertical-align: -0.5pt; margin-right: 3pt; }
+  .pagebreak { break-before: page; }
+  svg { break-inside: avoid; }
+  svg text { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eyebrow">Sample Assist · Engineering · Intern project</div>
+  <h1>SA Marketplace — Front-end Hand-over Report</h1>
+  <div class="muted" style="font-size:11.5pt">The customer marketplace, the seller portal and SA Admin: what was built, why, how to run it, how it was checked, and what comes next. It covers the three React apps only; the backend has its own delivery report.</div>
+  <div class="meta"><b>Prepared for:</b> Tech Lead &nbsp;·&nbsp; <b>Prepared by:</b> Rusira Senath Liyanage &nbsp;·&nbsp; <b>Status as at:</b> 27 October 2026 &nbsp;·&nbsp; <b>Source of truth:</b> Intern Project Brief, 15 July 2026</div>
+</div>
+
+<h2 style="margin-top:8pt">1. Summary</h2>
+<p>The brief asks for <b>one shared backend with several front-end entry points</b>. Three of the four entry points now exist as React apps on top of the Phase 1 backend: the <b>customer marketplace</b> for buyers, the <b>seller portal</b> for verified suppliers, and <b>SA Admin</b> for Sample Assist staff. Every screen in their designs is built and connected to the real API, with no sample data or fake backend, and each app was checked in a browser against the seeded database. The <b>Collection Manager (CM) store</b>, the fourth surface, has not been started. Nothing is deployed; everything runs locally, as the brief requires.</p>
+
+<div class="tiles">
+  <div class="tile"><div class="n">3</div><div class="l">React apps<br>(ports 5173, 5174, 5175)</div></div>
+  <div class="tile"><div class="n">42</div><div class="l">designed screens built<br>(13 + 18 + 11)</div></div>
+  <div class="tile"><div class="n">746</div><div class="l">automated tests in 130 files<br>(166 + 337 + 243)</div></div>
+  <div class="tile"><div class="n">0</div><div class="l">accessibility violations<br>found by axe on any checked page</div></div>
+</div>
+
+<h3>Four things to know up front</h3>
+<ol>
+  <li><b>The CM store is not built.</b> It is blocked on two open decisions (how CM users sign in, and how CM inventory decreases), both in the backend report. The three built apps are the template for it (sections 8 and 9).</li>
+  <li><b>Pages and the Redux store have no automated tests.</b> The 746 tests cover helpers, forms, tables, dialogs and layouts. Pages that call the API are checked in a browser against the real API, with a written walkthrough for the seller portal and SA Admin. An end-to-end suite is the main quality gap (section 6).</li>
+  <li><b>About 35 generic files exist in three copies</b> (table, pagination, dialog, layouts, hooks, the API client) because a shared package was deliberately not built. A fix to one must go into all three. Whether to extract a package before a fourth app is an open decision (section 5).</li>
+  <li><b>Where a design and the backend disagree, the backend wins.</b> Each app's plan lists every difference: 34 for the seller portal and 20 for SA Admin, with the customer app's in its plan and in section 3 below.</li>
+</ol>
+
+<h3>What you are receiving</h3>
+<div class="box"><b>Latest source code:</b> the <code>phase-1-completed</code> branch of the Bitbucket repository <code>innomente/equipment-assist</code>. The front ends live in <code>SA_MarketPlace/Frontend</code>: <code>customer-facing-frontend</code>, <code>seller-portal</code> and <code>admin-portal</code>. Run that branch; the pull-request split in <code>Backend/docs/report/pull-request-guide.md</code> (sections 6 and 7) sets out how to review and merge the front-end commits in order.</div>
+<table>
+  <thead><tr><th style="width:26%">Item</th><th>Where to find it</th></tr></thead>
+  <tbody>
+    <tr><td>Source code</td><td><code>SA_MarketPlace/Frontend/&lt;app&gt;/src</code>, about 18,500 lines excluding tests</td></tr>
+    <tr><td>Setup instructions</td><td>Section 2 of this report; <code>Frontend/README.md</code> (all three apps) and each app's own <code>README.md</code></td></tr>
+    <tr><td>Plans and screen lists</td><td><code>docs/ui-build-plan.md</code> in each app: every screen, route and endpoint, and where the backend won over the designs</td></tr>
+    <tr><td>Browser walkthroughs</td><td><code>docs/browser-checklist.md</code> in the seller portal and SA Admin: the steps, the accessibility pass and known limitations</td></tr>
+    <tr><td>State and API guide</td><td><code>customer-facing-frontend/docs/state-and-api.md</code>: how the store and client work, and the recipe for a new feature</td></tr>
+    <tr><td>Tests</td><td><code>__tests__</code> folders beside the code (<code>pnpm test</code> in each app)</td></tr>
+    <tr><td>This report</td><td><code>Frontend/docs/report</code> (PDF, HTML source and the script that renders it)</td></tr>
+  </tbody>
+</table>
+<p><b>Not included:</b> the screen designs, which are kept in the project's separate design folders rather than the repository and should be shared with the team alongside the code; and any secrets. The front ends hold none: their only configuration is an API address. Every login is a fictional seeded account.</p>
+
+<h2>2. Set it up on your own machine</h2>
+<p>Allow about 15 minutes, most of it the backend's first install. The front ends need the backend running, because none of them has sample data.</p>
+
+<h3>2.1 What you need</h3>
+<table>
+  <thead><tr><th>Tool</th><th>Version</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Node.js</td><td>24 or newer</td><td>Each app has an <code>.nvmrc</code> (<code>nvm use</code>); <code>engines</code> enforces it. The tests' jsdom does not run on Node 22 or older. Checked on 25.0.0</td></tr>
+    <tr><td>pnpm</td><td>10.17.1</td><td>Pinned in each <code>package.json</code>; <code>corepack enable</code> installs it</td></tr>
+    <tr><td>Docker Desktop</td><td>any recent</td><td>For the backend's Postgres only. Must be running</td></tr>
+    <tr><td>Free ports</td><td>5173, 5174, 5175</td><td>The front ends, plus the backend's 5433, 8001, 8002 and 8003. The front-end ports are fixed because the backend's reset-password links point at them</td></tr>
+  </tbody>
+</table>
+
+<h3>2.2 Start the backend, then a front end</h3>
+<div class="step"><div class="num">1</div><div class="body"><p>Start the backend (database, migrations, seed data, three APIs)</p>
+<pre>cd SA_MarketPlace/Backend
+cp .env.example .env
+pnpm install
+pnpm db:up &amp;&amp; pnpm --filter @sa-marketplace/entities migration:run &amp;&amp; pnpm db:seed
+pnpm dev</pre>
+<p style="font-weight:400"><code>pnpm dev</code> runs all three APIs in one terminal. Use it or the three single commands (<code>pnpm customer-facing</code>, <code>supplier-api</code>, <code>admin-api</code>), never both: they share ports and build folders and restart each other in a loop.</p></div></div>
+<div class="step"><div class="num">2</div><div class="body"><p>Start a front end, one terminal each for the ones you want to see</p>
+<pre>cd SA_MarketPlace/Frontend/customer-facing-frontend   # or seller-portal, or admin-portal
+pnpm install
+pnpm dev</pre>
+<p style="font-weight:400">No <code>.env</code> is needed: the default API address is the local backend. Copy <code>.env.example</code> to <code>.env</code> only to change <code>VITE_API_URL</code> (the seller portal also has <code>VITE_SUPPORT_EMAIL</code>).</p></div></div>
+<div class="step"><div class="num">3</div><div class="body"><p>Open VS Code on the app's own folder</p>
+<p style="font-weight:400">Not the repository root: the root window pins the Backend's TypeScript 4.9, which cannot read the front ends' config and shows false "cannot find module" errors.</p></div></div>
+
+<h3>2.3 The three apps and their logins</h3>
+<p>Every seeded account uses the password <code>Password123!</code>. Running <code>pnpm db:seed</code> in <code>Backend/</code> puts the data back after testing.</p>
+<table>
+  <thead><tr><th style="width:17%">App</th><th style="width:15%">Address</th><th style="width:14%">API</th><th>Sign in with</th></tr></thead>
+  <tbody>
+    <tr><td><span class="swatch" style="background:#0958d9"></span><b>Customer marketplace</b></td><td>localhost:5173</td><td>8001</td><td><code>j.shaw@saclinics.com.au</code> (buyer and collection manager); <code>s.chen@miningco.com.au</code> and <code>t.beckett@worksafe.com.au</code> have order history. Test cards: <code>4242 4242 4242 4242</code> approves, <code>4000 0000 0000 0002</code> declines</td></tr>
+    <tr><td><span class="swatch" style="background:#fa8c16"></span><b>Seller portal</b></td><td>localhost:5174</td><td>8002</td><td><code>priya@bindimedsupply.com.au</code> or <code>m.webb@safetyfirstdist.com.au</code> (approved); <code>r.patel@clinicalsupplies.com.au</code> (pending); <code>d.liu@cheaptestkits.com.au</code> (rejected)</td></tr>
+    <tr><td><span class="swatch" style="background:#722ed1"></span><b>SA Admin</b></td><td>localhost:5175</td><td>8003</td><td><code>a.morgan@sampleassist.com.au</code>. A new admin account needs a <code>@sampleassist.com.au</code> address</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 Commands, in each app's folder</h3>
+<table>
+  <thead><tr><th style="width:22%">Command</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>pnpm dev</code></td><td>Dev server with hot reload</td></tr>
+    <tr><td><code>pnpm test</code></td><td>Vitest and Testing Library (<code>pnpm test:watch</code> to watch)</td></tr>
+    <tr><td><code>pnpm typecheck</code></td><td><code>tsc -b</code></td></tr>
+    <tr><td><code>pnpm lint</code></td><td>ESLint</td></tr>
+    <tr><td><code>pnpm build</code></td><td>Type check, then a production build into <code>dist/</code> (<code>pnpm preview</code> serves it)</td></tr>
+  </tbody>
+</table>
+
+<h3>2.5 A ten-minute walkthrough that crosses all three apps</h3>
+<ol>
+  <li><b>Buyer.</b> In the customer app sign in as <code>j.shaw@saclinics.com.au</code>. Search the shop, filter by category and price, open a product, add two items from different sellers (one from Bindi MedSupply), and check out with the declined card (the cart stays intact), then with the approved card. A cart with two sellers becomes two orders.</li>
+  <li><b>Seller.</b> In the seller portal sign in as <code>priya@bindimedsupply.com.au</code>. The new order is on the dashboard with an SLA countdown. Open it, tick the pick list, and dispatch; the invoice can then be downloaded.</li>
+  <li><b>Buyer again.</b> In the customer app, My orders now shows the order as dispatched, with the same invoice PDF.</li>
+  <li><b>Admin.</b> In SA Admin sign in as <code>a.morgan@sampleassist.com.au</code>. Orders lists every order across sellers, with CSV export and the same invoice.</li>
+  <li><b>Verification.</b> In the seller portal register a new business. It lands on "under review". In SA Admin open Suppliers, review it, tick the three checks (Approve unlocks), and approve. Sign in to the seller portal again: the seller sees the approval notice once, then the dashboard. Reject a different one to see the reason on the seller's screen.</li>
+</ol>
+<div class="box warn"><b>Approve and reject send an email to the applicant and cannot be undone</b> from the screens (there is no suspend in Phase 1). The pop-ups say so. With no email settings the message is printed in the API terminal instead.</div>
+
+<h2>3. What the brief asked and what was delivered</h2>
+<p>The brief's Phase 1 lists the capabilities below. The rows show which front end delivers each one; the backend report covers the API side.</p>
+<table>
+  <thead><tr><th style="width:19%">Brief item</th><th style="width:13%">Status</th><th>Front-end delivery</th></tr></thead>
+  <tbody>
+    <tr><td>Accounts and roles</td><td><span class="chip done">Done</span></td><td>Sign-in, registration, forgot and reset password, session handling and route guards in all three apps. Each app talks only to its own API and its token is rejected by the others. SA Admin sign-up is limited to staff email domains.</td></tr>
+    <tr><td>Browse and search</td><td><span class="chip done">Done</span></td><td>Customer app: keyword search, category and price-range chips that combine, sorting, paging with a 10, 20 or 30 page size, and a detail page with suggestions.</td></tr>
+    <tr><td>Cart and checkout</td><td><span class="chip done">Done</span></td><td>Live-priced cart with steppers that appear only once an item is in the cart; two-step checkout; mock card payment with a declined-card pop-up.</td></tr>
+    <tr><td>Orders</td><td><span class="chip done">Done</span></td><td>Buyers: history, status filters, search, detail and reorder. Sellers: dashboard queue, orders table, fulfilment with pick list, dispatch and cancel with a reason. Admins: all orders, filters, sorting, CSV export.</td></tr>
+    <tr><td>Electronic invoice</td><td><span class="chip done">Done</span></td><td>"Download invoice" in all three apps serves the same stored PDF, offered once an order has dispatched. The file keeps its name.</td></tr>
+    <tr><td>Seller catalogue</td><td><span class="chip done">Done</span></td><td>List with search, status chips, sorting and a low-stock banner; add and edit with up to four images; Save draft and Publish; Retire (final).</td></tr>
+    <tr><td>Seller onboarding and verification</td><td><span class="chip done">Done</span></td><td>Seller sign-up with a checksum-validated ABN and the pending, rejected (with resubmit) and approved screens; admin queue, application review, approve and reject with a reason the seller sees.</td></tr>
+    <tr><td>CM ordering</td><td><span class="chip todo">Not started</span></td><td>The CM store front end, and a decision on single sign-on.</td></tr>
+    <tr><td>Inventory update</td><td><span class="chip part">Backend only</span></td><td>Placing an order reduces the supplier's stock. There is no screen for the buyer's own inventory; it needs the deferred "received" step (backend report).</td></tr>
+  </tbody>
+</table>
+
+<h3>The customer marketplace</h3>
+<p>Thirteen designed screens, all built: catalogue, product detail, cart, checkout (delivery and payment), order confirmation, My orders, order detail, add-to-cart states, items-per-page dropdown, login, register and edit profile.</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack and structure</td><td>React 19, Vite, TypeScript, Ant Design 6, styled-components reading the Ant Design tokens through <code>ThemeBridge</code>, Redux Toolkit with RTK Query in the CM's feature-folder shape (<code>actions</code>, <code>slice</code>, <code>selector</code>, <code>types</code>). A store used by one page lives in that page's folder.</td></tr>
+    <tr><td>API and sessions</td><td>One client turns every failure into one error shape and shows the backend's own message. The token lives in <code>sessionStorage</code>; a rejected token ends the session with "Session expired"; sign-out clears all cached data. Guards send visitors to sign in and back.</td></tr>
+    <tr><td>Where the backend won</td><td>GST is the total divided by 11; no supplier rating; the backend's password rule, card rules and statuses; no current-password field on change password; no PO number; invoice offered only after dispatch; no "Notify me" (it promised an alert that never came).</td></tr>
+    <tr><td>Backend changes it needed</td><td>An order-number <code>search</code> on <code>GET /orders</code>, the invoice file name exposed over CORS, and optional real email. All small, additive and tested.</td></tr>
+    <tr><td>Colour and accessibility</td><td>The brand blue was darkened to <code>#0958d9</code> so white text passes WCAG AA (6.5 to 1). axe runs in a test on every page and pop-up; skip link, one <code>h1</code> per page, announced page titles, named dialogs, labelled fields.</td></tr>
+  </tbody>
+</table>
+
+<h3>The seller portal</h3>
+<p>Eighteen designed screens, all built, plus a reset-password page and a retire pop-up that the designs did not include. A single gate sends a seller to the right place after sign-in: the portal, or the screen that says where their application stands.</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack and structure</td><td>Built from the customer app with a left sidebar (a menu button and drawer below 992 px) and the seller's orange. The dashboard shows live counts and the orders to dispatch, closest deadline first.</td></tr>
+    <tr><td>Where the backend won</td><td>34 differences are listed in the plan. For example: no "product categories" or "role" box on sign-up (the profile derives categories from products), dispatch sends no email, status screens say "Sample Assist", and sellers set prices directly.</td></tr>
+    <tr><td>Colour and accessibility</td><td>White on the brand orange is only 2.4 to 1, so buttons use near-black text and orange text is the darker <code>#ad4e00</code>. axe found four issues in the final pass (unlabelled read-only fields, a details list without terms, colour-only links, placeholder contrast); all fixed.</td></tr>
+    <tr><td>Behaviour worth knowing</td><td>Confirm dispatch stays disabled until every pick-list item is ticked, with a warning that says why. Price and stock are read-only in the catalogue list and changed on the edit page. A failed dispatch from the queue is shown, never silent.</td></tr>
+    <tr><td>Backend change it needed</td><td>One line: <code>Content-Disposition</code> exposed over CORS so the invoice keeps its name.</td></tr>
+  </tbody>
+</table>
+
+<h3>SA Admin</h3>
+<p>Eleven designed screens, all built: sign-in, register, supplier verification (queue, empty queue), application review with approve and reject pop-ups, all orders (and its empty state), order detail and My profile, plus the forgot and reset password pages.</p>
+<table>
+  <thead><tr><th style="width:22%">Topic</th><th>What was done</th></tr></thead>
+  <tbody>
+    <tr><td>Stack and structure</td><td>Built from the seller portal with its own purple and a sidebar of Suppliers (with a pending-count badge), Orders and My Profile.</td></tr>
+    <tr><td>Where the backend won</td><td>20 differences are listed in the plan. The main ones: no "keep me signed in"; no invitation code on register (the backend requires a terms tick and a staff email domain); only the name is editable on the profile; no "Invite administrator" card; order filters use the backend's real payment statuses and fulfilment stages.</td></tr>
+    <tr><td>The verification checklist</td><td>Three tick boxes on a pending application. <b>Approve is disabled until all three are ticked</b>, with a notice beside the boxes saying why; Reject is always available. The ticks are not saved, because the backend has no field for them, so this only guards against an accidental approval and does not prove the checks were made.</td></tr>
+    <tr><td>Decisions it makes safe</td><td>Both decisions email the applicant and cannot be undone here, and the pop-ups say so. A decided application shows who decided it, when, and the reason given. If another admin decides first, the screen shows the backend's 409 message and refreshes.</td></tr>
+    <tr><td>Backend change it needed</td><td>One line: <code>Content-Disposition</code> exposed over CORS so the CSV export and the invoice keep their names.</td></tr>
+    <tr><td>Accessibility</td><td>The purple <code>#722ed1</code> is 6.9 to 1 against white and needed no workaround. axe found no violations on 20 signed-in pages and pop-ups, or on the five public pages.</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Architecture</h2>
+<p>Each app is an independent single-page application with the same shape. A page reads the store through RTK Query hooks; the hooks call one API client; the client calls that app's API and nothing else.</p>
+
+<svg viewBox="0 0 700 250" width="100%" role="img" aria-label="Front-end architecture: apps, shared shape, APIs, one database">
+  <rect x="0" y="0" width="700" height="250" fill="#ffffff"/>
+  <g font-size="11" fill="#1f2937">
+    <text x="12" y="16" font-weight="700" fill="#6b7280">THREE REACT APPS (BUILT)</text>
+    <rect x="12" y="24" width="160" height="44" rx="6" fill="#dbeafe" stroke="#0958d9"/><text x="92" y="43" text-anchor="middle" font-weight="700">Customer marketplace</text><text x="92" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">:5173 · top bar</text>
+    <rect x="192" y="24" width="160" height="44" rx="6" fill="#ffedd5" stroke="#d46b08"/><text x="272" y="43" text-anchor="middle" font-weight="700">Seller portal</text><text x="272" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">:5174 · sidebar</text>
+    <rect x="372" y="24" width="160" height="44" rx="6" fill="#f3e8ff" stroke="#722ed1"/><text x="452" y="43" text-anchor="middle" font-weight="700">SA Admin</text><text x="452" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">:5175 · sidebar</text>
+    <rect x="552" y="24" width="136" height="44" rx="6" fill="#f3f4f6" stroke="#9ca3af" stroke-dasharray="4 3"/><text x="620" y="43" text-anchor="middle" fill="#6b7280">CM store</text><text x="620" y="58" text-anchor="middle" fill="#6b7280" font-size="9.5">not started</text>
+    <rect x="12" y="92" width="520" height="62" rx="6" fill="#f9fafb" stroke="#d1d5db"/>
+    <text x="22" y="108" font-weight="700" fill="#374151">Inside every app (same names, copied between apps)</text>
+    <text x="22" y="124" fill="#374151" font-size="10">router (routes.tsx, paths.ts) → pages → RTK Query hooks (store/&lt;feature&gt;/actions) → API client (infra/http.ts)</text>
+    <text x="22" y="140" fill="#374151" font-size="10">errors.ts (one error shape) · session in sessionStorage · SA* shared parts · SADialog pop-ups as child routes</text>
+    <g stroke="#9ca3af" stroke-width="1.4" fill="none"><path d="M92 68 V92"/><path d="M272 68 V92"/><path d="M452 68 V92"/><path d="M92 154 V176"/><path d="M272 154 V176"/><path d="M452 154 V176"/></g>
+    <rect x="12" y="176" width="160" height="40" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="92" y="194" text-anchor="middle" font-weight="700">customer-facing API</text><text x="92" y="208" text-anchor="middle" fill="#374151" font-size="9.5">port 8001</text>
+    <rect x="192" y="176" width="160" height="40" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="272" y="194" text-anchor="middle" font-weight="700">supplier-api</text><text x="272" y="208" text-anchor="middle" fill="#374151" font-size="9.5">port 8002</text>
+    <rect x="372" y="176" width="160" height="40" rx="6" fill="#dbeafe" stroke="#1d4ed8"/><text x="452" y="194" text-anchor="middle" font-weight="700">admin-api</text><text x="452" y="208" text-anchor="middle" fill="#374151" font-size="9.5">port 8003</text>
+    <rect x="552" y="176" width="136" height="40" rx="6" fill="#e5e7eb" stroke="#6b7280"/><text x="620" y="194" text-anchor="middle" font-weight="700">PostgreSQL</text><text x="620" y="208" text-anchor="middle" fill="#374151" font-size="9.5">one database</text>
+    <g stroke="#9ca3af" stroke-width="1.4" fill="none"><path d="M172 196 H192" stroke-dasharray="2 3"/><path d="M352 196 H372" stroke-dasharray="2 3"/><path d="M532 196 H552"/></g>
+    <text x="12" y="238" fill="#6b7280" font-size="9.5">The CM store, when built, uses the customer-facing API: same account, orders and inventory.</text>
+  </g>
+</svg>
+
+<h3>Folder shape, the same in all three</h3>
+<table>
+  <thead><tr><th style="width:24%">Folder (under <code>src</code>)</th><th>What lives there</th></tr></thead>
+  <tbody>
+    <tr><td><code>router/</code></td><td><code>routes.tsx</code> declares the whole route tree once (pages load lazily); <code>paths.ts</code> holds every URL, so a route change is one file; <code>handle.ts</code> gives each route its title and breadcrumbs</td></tr>
+    <tr><td><code>pages/</code></td><td>One folder per screen, each with its own <code>components/</code> and <code>__tests__/</code>. <code>Modals/</code> holds the pop-ups, each with its own route</td></tr>
+    <tr><td><code>components/</code></td><td>Shared <code>SA</code>-prefixed parts (<code>SATable</code>, <code>SAPagination</code>, <code>SADialog</code>, <code>SAPageHeader</code>…) and <code>layouts/</code>. Anything used on one page stays in that page's folder; two or more moves here</td></tr>
+    <tr><td><code>store/</code></td><td>Redux features (<code>actions</code> = RTK Query endpoints, <code>slice</code>, <code>selector</code>, <code>types</code>) and the store setup</td></tr>
+    <tr><td><code>infra/</code></td><td>The API client (<code>http.ts</code>, <code>api.ts</code>, <code>errors.ts</code>) and <code>pagination.ts</code>, the backend's paging contract</td></tr>
+    <tr><td><code>hooks/ utils/ patterns/ constants/ styles/</code></td><td>Helpers; <code>utils/format.ts</code> formats money, dates and counts; <code>styles/theme.ts</code> is the app's Ant Design token set</td></tr>
+  </tbody>
+</table>
+
+<h3>Routes at a glance</h3>
+<table>
+  <thead><tr><th style="width:17%">App</th><th>Routes</th></tr></thead>
+  <tbody>
+    <tr><td>Customer</td><td><code>/shop</code>, <code>/shop/products/:id</code>, <code>/cart</code> (+ remove and clear pop-ups), <code>/checkout/delivery</code>, <code>/checkout/payment</code> (+ declined), <code>/checkout/confirmation/:order</code>, <code>/orders</code>, <code>/orders/:order</code> (+ reorder), <code>/profile</code> (+ sign out); public: <code>/login</code>, <code>/register</code>, <code>/forgot-password</code>, <code>/reset-password</code>, <code>/session-expired</code></td></tr>
+    <tr><td>Seller</td><td><code>/</code> (dashboard), <code>/application</code> and <code>/application/resubmit</code> (before approval), <code>/orders</code>, <code>/orders/:order</code> (+ cancel), <code>/catalogue</code>, <code>/catalogue/new</code>, <code>/catalogue/:id</code>, <code>/catalogue/retire/:id</code>, <code>/profile</code> (+ sign out); the same public pages</td></tr>
+    <tr><td>Admin</td><td><code>/suppliers</code>, <code>/suppliers/:id</code> (+ approve, reject), <code>/orders</code>, <code>/orders/:order</code>, <code>/profile</code> (+ sign out); the same public pages</td></tr>
+    <tr><td>All</td><td><code>/403</code>, <code>/500</code> and a not-found page</td></tr>
+  </tbody>
+</table>
+
+<h2>5. Decisions and why</h2>
+<p>These shape the front ends most. The seller portal and SA Admin keep the full list in their <code>ui-build-plan.md</code> (section 8, "Decisions (settled)").</p>
+<table>
+  <thead><tr><th style="width:23%">Decision</th><th style="width:40%">Why</th><th>Industry practice followed</th></tr></thead>
+  <tbody>
+    <tr><td><b>Ant Design is the only UI library; one theme token set per app</b></td><td>The brief says marketplace, seller and admin use Ant Design with a distinct primary colour each, so the surfaces read as separate products. A colour change is one token.</td><td>Design tokens; a single component library.</td></tr>
+    <tr><td><b>styled-components reads the Ant Design tokens</b></td><td>Styles sit at the bottom of the component file as in Collection Manager, and both libraries read one theme, so nothing drifts.</td><td>Design-token theming; co-located styles.</td></tr>
+    <tr><td><b>RTK Query for every API call</b></td><td>Caching, loading and error states and re-fetching on change come from one tool, in the feature-folder shape the CM already uses.</td><td>Server state kept apart from UI state.</td></tr>
+    <tr><td><b>No sample data, no fake backend</b></td><td>A mock hid real mismatches. Removing it meant every screen was checked against the real API and its real errors.</td><td>Test against the real contract.</td></tr>
+    <tr><td><b>The backend wins over the designs</b></td><td>The API enforces the rules (GST, passwords, statuses, who may do what). A screen that promised otherwise would mislead, so each difference is written down per app.</td><td>One source of truth for business rules.</td></tr>
+    <tr><td><b>Pop-ups are routes</b></td><td>A pop-up is a child route of the page it opens over (<code>/cart/remove/:id</code>), so Back closes it and a link can open it. All use <code>SADialog</code>: an icon, a one-line summary, what changes, what stays the same, and equal buttons with the safe choice first.</td><td>URL as state; consistent confirm-dialog pattern.</td></tr>
+    <tr><td><b>Ask before losing edits</b></td><td>Pages that edit saved data (customer profile, seller product form and business profile, admin profile) use <code>useUnsavedChanges</code>: leaving asks to keep editing, discard or save; closing the tab gets the browser's own warning.</td><td>Unsaved-changes guard on forms.</td></tr>
+    <tr><td><b>Never disable a control without saying why nearby</b></td><td>A greyed button with no reason is a dead end. Confirm dispatch and Approve supplier each carry a notice that says what unlocks them.</td><td>WCAG: operable, understandable controls.</td></tr>
+    <tr><td><b>The access token lives in <code>sessionStorage</code>; sessions are 15 minutes with no renewal</b></td><td>It ends with the tab, and the backend revokes tokens on sign-out and password change. "Keep me signed in" was left out because the backend does not support it (ADR 0045), and showing it would mislead.</td><td>Short-lived tokens; do not offer what the API cannot do.</td></tr>
+    <tr><td><b>Copy the generic files, do not share a package</b></td><td>The brief says the CM and marketplace deliberately share no component library, and a package for one team's first three apps was more machinery than the work needed. Cost: three copies of about 35 files (a fix goes into all three). <b>Open decision</b> before a fourth app.</td><td>Rule of three for extraction.</td></tr>
+    <tr><td><b>Latest releases; TypeScript 7 compiles</b></td><td>The apps start on current versions (<code>pnpm outdated</code> prints nothing). <code>typescript</code> is aliased to the 6.0 package so <code>typescript-eslint</code> can read it until it supports 7.</td><td>Stay current; keep the toolchain working side by side.</td></tr>
+    <tr><td><b>No enums</b></td><td><code>erasableSyntaxOnly</code> is on, so <code>as const</code> objects and string unions replace enums.</td><td>Types that erase to plain JavaScript.</td></tr>
+  </tbody>
+</table>
+
+<h3>Questions the brief left open, and how they were settled on the front end</h3>
+<table>
+  <thead><tr><th style="width:32%">Question</th><th>Answer</th></tr></thead>
+  <tbody>
+    <tr><td>Seller and buyer status words differ</td><td>One backend status, shown in each app's own words (backend ADR 0036).</td></tr>
+    <tr><td>When a seller sees the "approved" screen</td><td>Once, on the first sign-in after approval; the seller portal's gate handles it (backend ADR 0032).</td></tr>
+    <tr><td>Changing the sign-in email</td><td>Not offered: the seller profile says so beside the field. Re-verification of the new address would be needed first.</td></tr>
+    <tr><td>Where seller prices are set</td><td>Directly by the seller on the edit page, with no approval loop (brief). Read-only in the list so a price is never changed by accident.</td></tr>
+    <tr><td>CM sign-in and CM inventory</td><td><b>Still open</b> (section 7).</td></tr>
+  </tbody>
+</table>
+
+<h2>6. Quality and accessibility</h2>
+<h3>Automated checks (run for this report)</h3>
+<p>Type check, lint, unit tests and a production build were run on each app on 27 October 2026. All pass with no errors.</p>
+<table>
+  <thead><tr><th>App</th><th>Test files</th><th>Tests</th><th>Type check</th><th>Lint</th><th>Build</th></tr></thead>
+  <tbody>
+    <tr><td>Customer marketplace</td><td>35</td><td>166</td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td></tr>
+    <tr><td>Seller portal</td><td>51</td><td>337</td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td></tr>
+    <tr><td>SA Admin</td><td>44</td><td>243</td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td><td><span class="chip done">Pass</span></td></tr>
+  </tbody>
+</table>
+<p><b>What the tests cover:</b> pure helpers (query builders, status mapping, formatters, change detection, validation rules), forms, tables, the pop-ups and layouts, and, in the customer app, an axe run over every page and pop-up. <b>What they do not cover:</b> pages that call the API and the Redux store, because the fake backend was removed. Those are checked in a browser against the real API (below). This is the largest gap in the front end (section 7).</p>
+
+<h3>Browser verification</h3>
+<table>
+  <thead><tr><th style="width:24%">App</th><th>How it was checked</th></tr></thead>
+  <tbody>
+    <tr><td>Customer marketplace</td><td>Walkthrough against a freshly seeded database: sign-in, shopping, cart, checkout declined and approved, orders, invoice, reorder, profile (including a password change and restore), sign-out and registration.</td></tr>
+    <tr><td>Seller portal</td><td>The 16-step walkthrough in <code>docs/browser-checklist.md</code>, including the dispatch gate, the retire and cancel pop-ups, the product form and the business profile.</td></tr>
+    <tr><td>SA Admin</td><td>The 19-step walkthrough in <code>docs/browser-checklist.md</code>, with decisions made in the real database (a supplier rejected, another approved and checked from the seller side). It found two bugs the tests had missed: a previous record showing after a bad link, and a crash when the profile arrived after the page first rendered. Both are fixed with regression tests confirmed to fail without the fix, and the second was also fixed in the customer app.</td></tr>
+  </tbody>
+</table>
+
+<h3>Accessibility</h3>
+<p>axe-core (WCAG 2.1 A and AA, colour contrast included) found no violations on any page or pop-up checked, after the fixes noted in section 3. Every page has one <code>h1</code>, an announced title, a "Skip to main content" first tab stop and named dialogs. Below 992 px the navigation becomes a menu button and drawer that a keyboard can reach. <b>Not covered:</b> a screen-reader pass with a real reader, and responsive page layouts.</p>
+<table>
+  <thead><tr><th>App</th><th>Primary colour</th><th>Contrast with white</th><th>Treatment</th></tr></thead>
+  <tbody>
+    <tr><td>Customer</td><td><span class="swatch" style="background:#0958d9"></span><code>#0958d9</code></td><td>6.5 to 1</td><td>Darkened from the designs' <code>#1677ff</code> (4.1 to 1)</td></tr>
+    <tr><td>Seller</td><td><span class="swatch" style="background:#fa8c16"></span><code>#fa8c16</code></td><td>2.4 to 1</td><td>Near-black text on orange fills; orange text is <code>#ad4e00</code></td></tr>
+    <tr><td>Admin</td><td><span class="swatch" style="background:#722ed1"></span><code>#722ed1</code></td><td>6.9 to 1</td><td>None needed</td></tr>
+  </tbody>
+</table>
+
+<h3>Security on the front end</h3>
+<table>
+  <thead><tr><th style="width:30%">Concern</th><th>Control</th></tr></thead>
+  <tbody>
+    <tr><td>Who can see what</td><td>The API decides; the front end filters nothing itself. A route guard sends visitors to sign in, and the seller portal's gate keeps unapproved sellers off the portal. Another user's record answers 404, which the pages show as "not found".</td></tr>
+    <tr><td>Tokens and secrets</td><td>No secrets in any front end. The token is in <code>sessionStorage</code>, sent as a Bearer header, and cleared on 401 or sign-out. <code>.env</code> is git-ignored; <code>.env.example</code> holds only an API address.</td></tr>
+    <tr><td>Card data</td><td>The payment form posts to the mock API; nothing is stored in the browser, and the backend keeps only the last four digits and the brand.</td></tr>
+    <tr><td>Input</td><td>Forms validate (email, password rule, ABN checksum, lengths) for speed, and the backend validates again for safety, and its messages are shown as written. React escapes everything it renders; no HTML is injected.</td></tr>
+  </tbody>
+</table>
+
+<h2>7. Known limitations and open items</h2>
+<table>
+  <thead><tr><th style="width:27%">Item</th><th>State and what is needed</th></tr></thead>
+  <tbody>
+    <tr><td><b>CM store front end</b></td><td>Not started. Needs the two decisions in the backend report (single sign-on, and how CM stock decreases).</td></tr>
+    <tr><td><b>No page or store tests</b></td><td>Covered by browser walkthroughs only. A small end-to-end suite (for example Playwright) against the seeded API would close this for all three apps.</td></tr>
+    <tr><td><b>Pages are desktop-only</b></td><td>Below 992 px the navigation adapts, but tables scroll sideways or squeeze and cards crowd. Responsive layouts are Phase 2 (brief).</td></tr>
+    <tr><td><b>15-minute sessions</b></td><td>No refresh tokens (backend ADR 0045). A seller filling the long product form, or an admin editing a name, can be signed out and lose it. Saving a draft often is the workaround.</td></tr>
+    <tr><td><b>Admin sign-up is a speed bump</b></td><td>It only checks the email domain, so anyone can create <code>anything@sampleassist.com.au</code> and approve suppliers (backend ADR 0038). Fine for local fake data; replace it before any real use, for example an existing admin approving each new admin.</td></tr>
+    <tr><td><b>The admin checklist is not saved</b></td><td>It gates Approve on the screen but nothing records that the checks were made. Saving it needs a backend field.</td></tr>
+    <tr><td><b>Approve and reject cannot be undone</b></td><td>There is no suspend or offboarding in Phase 1. The pop-ups say so before confirming.</td></tr>
+    <tr><td><b>The pick list is not saved</b></td><td>The ticks live on the screen; the backend has no "picking" status. A refresh forgets them.</td></tr>
+    <tr><td><b>Seeded product images do not exist</b></td><td>Cards show a category icon and the browser logs a failed request per image. Products created in the seller portal show real pictures.</td></tr>
+    <tr><td><b>Backend gaps the screens expose</b></td><td>No "delivered" action; no storage conditions or shelf life on a seller's product form; no choosing a primary image; no "Notify me" when out of stock; no change of sign-in email; reset emails only if Gmail is configured.</td></tr>
+    <tr><td><b>Large exports</b></td><td>The backend refuses a CSV over 10,000 rows before sending anything; the screen shows its message. Narrow the filters.</td></tr>
+    <tr><td><b>Three copies of about 35 files</b></td><td>A fix goes into every copy. One bug fix already had to be made in two apps.</td></tr>
+  </tbody>
+</table>
+
+<h2>8. Next steps</h2>
+<table>
+  <thead><tr><th style="width:5%">#</th><th style="width:26%">Step</th><th>State and what it involves</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>Foundation</b></td><td><span class="chip done">Done</span> Vite and React project, typed API client with token handling, routing, layouts, shared components.</td></tr>
+    <tr><td>2</td><td><b>Customer marketplace</b></td><td><span class="chip done">Done</span></td></tr>
+    <tr><td>3</td><td><b>Seller portal</b></td><td><span class="chip done">Done</span></td></tr>
+    <tr><td>4</td><td><b>SA Admin</b></td><td><span class="chip done">Done</span></td></tr>
+    <tr><td>5</td><td><b>CM store</b></td><td><span class="chip todo">Not started</span> Catalogue, cart, checkout and My orders inside Collection Manager, matching its existing look (navy <code>#00004C</code>, blue <code>#156CC9</code>, not Ant Design), plus the sign-in decision. Each buyer feature is one backend ticket and two front-end tickets, because the two buyer surfaces share no component library.</td></tr>
+  </tbody>
+</table>
+<h3>Phase 2 and 3 on the front end (from the brief)</h3>
+<table>
+  <thead><tr><th style="width:22%">Phase</th><th>Candidates</th></tr></thead>
+  <tbody>
+    <tr><td><b>Phase 2</b></td><td>Responsive and mobile layouts; richer filters and sorting; saved addresses; seller analytics and low-stock alerts; ratings and reviews; seller storefront pages; order tracking with notifications; customer-specific pricing screens in both buyer apps and a management screen for sellers; ABN lookup in the admin review.</td></tr>
+    <tr><td><b>Phase 3</b></td><td>Admin reporting dashboard; notifications centre; recurring orders; multi-user seller accounts; audit views; performance work.</td></tr>
+    <tr><td><b>Always out of scope</b></td><td>Real card processing, shipping-carrier integrations, native mobile apps, multi-currency, and production deployment.</td></tr>
+  </tbody>
+</table>
+
+<h2>9. Recommendations</h2>
+<p>In the order I would tackle them.</p>
+<table>
+  <thead><tr><th style="width:4%">#</th><th style="width:30%">Recommendation</th><th>Why, and who</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><b>Merge <code>phase-1-completed</code> into <code>main</code> through reviewed pull requests</b></td><td>The brief wants work to land by pull request and never broken. Review in the order in <code>Backend/docs/report/pull-request-guide.md</code> (front-end commits in sections 6 and 7), not as one diff, and run the four checks in section 2.4 on each app at each step. <i>Tech lead.</i></td></tr>
+    <tr><td>2</td><td><b>Settle the two open decisions before building the CM store</b></td><td>How CM users sign in, and how CM stock decreases. They shape the CM screens and the data flow. <i>Tech lead with the CM team.</i></td></tr>
+    <tr><td>3</td><td><b>Decide on a shared package before the fourth app</b></td><td>Three copies of about 35 files is where copying stops paying off. Either extract them into a workspace package (<code>pnpm</code> workspaces, as the backend does) or keep copying with identical names and tests. The CM store will not use Ant Design, so only the non-visual parts (API client, errors, pagination, formatters, hooks) are candidates for sharing with it. <i>Tech lead.</i></td></tr>
+    <tr><td>4</td><td><b>Add an end-to-end suite</b></td><td>It would replace the written walkthroughs and cover the pages and store that have no tests. Run it against a freshly seeded database.</td></tr>
+    <tr><td>5</td><td><b>Replace admin sign-up before any real use</b></td><td>Require an existing admin to approve each new admin, or verify the mailbox. <i>Tech lead.</i></td></tr>
+    <tr><td>6</td><td><b>Add responsive layouts when Phase 2 starts</b></td><td>The navigation already adapts; the pages need work, buyer apps first.</td></tr>
+    <tr><td>7</td><td><b>Revisit sessions with real use</b></td><td>If the 15-minute sign-out hurts (long forms), add refresh tokens (design in backend ADR 0045) and an auto-saved draft in the product form.</td></tr>
+  </tbody>
+</table>
+
+<h3>Main risks</h3>
+<table>
+  <thead><tr><th style="width:30%">Risk</th><th style="width:14%">Level</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr><td>CM sign-in and inventory rules are undecided</td><td><span class="chip todo">High</span></td><td>Recommendation 2 before any CM screens.</td></tr>
+    <tr><td>Pages and store untested by code</td><td><span class="chip part">Medium</span></td><td>Browser walkthroughs now; an end-to-end suite (recommendation 4).</td></tr>
+    <tr><td>Three copies of shared files</td><td><span class="chip part">Medium</span></td><td>Same names and tests everywhere; decide on a package (recommendation 3).</td></tr>
+    <tr><td>Admin sign-up only checks the email domain</td><td><span class="chip part">Medium</span></td><td>Fine for local fake data; replace before real use (recommendation 5).</td></tr>
+    <tr><td>Desktop-only pages</td><td><span class="chip part">Low</span></td><td>Out of Phase 1 by the brief; recommendation 6.</td></tr>
+    <tr><td>Knowledge held by one developer</td><td><span class="chip done">Low</span></td><td>Reduced by the plans and walkthroughs in each app's <code>docs</code>, READMEs that run from a clean checkout, and this report.</td></tr>
+  </tbody>
+</table>
+
+<h2 class="pagebreak">Appendix A: package versions</h2>
+<p>The same in all three apps (<code>package.json</code>); everything is the latest release.</p>
+<table>
+  <thead><tr><th style="width:28%">Package</th><th style="width:16%">Version</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td>react, react-dom</td><td>19.3</td><td>UI</td></tr>
+    <tr><td>vite, @vitejs/plugin-react</td><td>8.3, 6.1</td><td>Dev server and build</td></tr>
+    <tr><td>typescript</td><td>7.0 compiles</td><td><code>typescript</code> is aliased to 6.0 so <code>typescript-eslint</code> works</td></tr>
+    <tr><td>antd, @ant-design/icons</td><td>6.6, 6.3</td><td>UI library and icons</td></tr>
+    <tr><td>styled-components</td><td>6.6</td><td>Styles reading the Ant Design tokens</td></tr>
+    <tr><td>@reduxjs/toolkit, react-redux</td><td>2.13, 9.3</td><td>State and RTK Query</td></tr>
+    <tr><td>react-router</td><td>8.5</td><td>Data router, <code>useBlocker</code>, child-route pop-ups</td></tr>
+    <tr><td>vitest, @testing-library/*, jsdom</td><td>5.0, 16 / 14 / 7, 30</td><td>Tests (Node 24 or newer)</td></tr>
+    <tr><td>eslint, typescript-eslint, react-hooks and react-refresh plugins</td><td>10.13, 8.72, 7.1, 0.5</td><td>Lint (the react-refresh rule means component files export only components)</td></tr>
+    <tr><td>@fontsource-variable/inter</td><td>5.3</td><td>The font, served locally</td></tr>
+  </tbody>
+</table>
+
+<h2>Appendix B: documents in each app</h2>
+<table>
+  <thead><tr><th style="width:30%">File</th><th>What it holds</th></tr></thead>
+  <tbody>
+    <tr><td><code>Frontend/README.md</code></td><td>Setup for all three apps, logins, commands, shared rules, troubleshooting</td></tr>
+    <tr><td><code>&lt;app&gt;/README.md</code></td><td>Status, structure, conventions, routes (customer), versions</td></tr>
+    <tr><td><code>customer-facing-frontend/docs/ui-build-plan.md</code></td><td>The ten build steps, design points settled, accessibility pass</td></tr>
+    <tr><td><code>customer-facing-frontend/docs/state-and-api.md</code></td><td>Store layout, decisions, each connected feature, and the recipe for adding one</td></tr>
+    <tr><td><code>seller-portal/docs/ui-build-plan.md</code></td><td>Scope, screens, routes and endpoints, 34-row ledger of backend-over-design decisions, architecture, build steps, risks</td></tr>
+    <tr><td><code>admin-portal/docs/ui-build-plan.md</code></td><td>The same for SA Admin, with a 20-row ledger</td></tr>
+    <tr><td><code>seller-portal/docs/browser-checklist.md</code>, <code>admin-portal/docs/browser-checklist.md</code></td><td>The walkthrough steps, the axe pass record and known limitations</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

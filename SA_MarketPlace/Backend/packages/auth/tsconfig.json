@@ -1,0 +1,10 @@
+{
+  "extends": "@sa-marketplace/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "incremental": false,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

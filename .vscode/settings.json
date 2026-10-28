@@ -1,0 +1,9 @@
+{
+  "prettier.prettierPath": "./SA_MarketPlace/Backend/node_modules/prettier",
+  "typescript.tsdk": "./SA_MarketPlace/Backend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "js/ts.tsdk.path": "./SA_MarketPlace/Backend/node_modules/typescript/lib"
+}

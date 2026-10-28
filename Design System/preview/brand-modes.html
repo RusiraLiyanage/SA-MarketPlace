@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { padding: 0; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .pane { padding: 18px 20px; font-family: 'Roboto'; }
+  .light { background: #fff; color: #00004C; }
+  .dark  { background: #00004C; color: #fff; position: relative; overflow: hidden; }
+  h3 { font-weight: 700; font-size: 18px; margin-bottom: 6px; }
+  .dark h3 { color: #01B4D2; }
+  p { font-size: 12px; line-height: 1.5; opacity: .85; }
+  .wave { position: absolute; inset: auto 0 0 0; height: 60px; background: repeating-linear-gradient(-20deg, rgba(1,180,210,0.25) 0 1px, transparent 1px 7px); opacity: .6; pointer-events: none; }
+  .lbl { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: .6; margin-bottom: 8px; }
+</style></head><body>
+<div class="split">
+  <div class="pane light">
+    <div class="lbl">Light mode · documents</div>
+    <h3>Heading in Plasma</h3>
+    <p>Body copy in Gray Blue on white. Calm, clinical, evidence-based tone. Cards and tables sit on Gray 50.</p>
+  </div>
+  <div class="pane dark">
+    <div class="lbl">Navy mode · hero</div>
+    <h3>Heading in Plasma</h3>
+    <p>Body copy in white at 72% opacity. Subtle linework wave lives at the bottom of the canvas.</p>
+    <div class="wave"></div>
+  </div>
+</div>
+</body></html>
